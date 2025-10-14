@@ -1,3 +1,5 @@
+using EWorldCup.Api.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -16,6 +18,9 @@ builder.Services.AddCors(o =>
   });
 });
 
+// Register repositories
+builder.Services.AddSingleton<IParticipantRepository, InMemoryParticipantRepository>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -25,7 +30,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseAuthorization();
-app.MapControllers();
 
+app.MapControllers();
 app.Run();
