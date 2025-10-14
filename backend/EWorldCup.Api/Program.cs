@@ -5,6 +5,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
 
+const string Frontend = "Frontend";
+builder.Services.AddCors(o =>
+{
+  o.AddPolicy(Frontend, p =>
+  {
+    p.WithOrigins("http://localhost:3000")
+     .AllowAnyHeader()
+     .AllowAnyMethod();
+  });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
