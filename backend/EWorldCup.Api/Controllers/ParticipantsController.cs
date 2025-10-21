@@ -16,9 +16,9 @@ namespace EWorldCup.Api.Controllers
         /// <summary>
         /// Skapar en ny instans av <see cref="ParticipantsController"/>.
         /// </summary>
-        public ParticipantsController(IParticipantRepository repository)
+        public ParticipantsController(IParticipantRepository participantRepository)
         {
-            _repository = repository;
+            _repository = participantRepository;
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿using EWorldCup.Api.DTO.Responses;
 using EWorldCup.Api.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Numerics;
 
 namespace EWorldCup.Api.Controllers
 {
@@ -17,9 +17,9 @@ namespace EWorldCup.Api.Controllers
         /// <summary>
         /// Skapar en ny instans av <see cref="RoundsController"/>
         /// </summary>
-        public RoundsController()
+        public RoundsController(IRoundRepository roundRepository)
         {
-            _roundRepository = new InMemoryRoundRepository();
+            _roundRepository = roundRepository;
         }
 
         /// <summary>
@@ -30,17 +30,43 @@ namespace EWorldCup.Api.Controllers
         /// <response code="200">Beräkning lyckades.</response>
         /// <response code="400">Felaktig indata (t.ex. udda eller för litet n).</response>
         [HttpGet("max")]
-        public IActionResult GetMaxRounds([FromQuery] int? n)
+        public IActionResult GetMaxRounds([FromQuery] string? n)
         {
-            try
+            if (string.IsNullOrWhiteSpace(n))
             {
-                var max = _roundRepository.GetMaxRounds(n);
-                return Ok(new { ok = true, n = n ?? _roundRepository.GetMaxRounds(), max });
+                try
+                {
+                    var maxInt = _roundRepository.GetMaxRounds(null); // validates even & ≥ 2
+                    var nInt = maxInt + 1;
+
+                    return Ok(new
+                    {
+                        ok = true,
+                        n = nInt.ToString(),
+                        max = maxInt.ToString()
+                    });
+                }
+                catch (ArgumentException ex)
+                {
+                    return BadRequest(new { ok = false, message = ex.Message });
+                }
             }
-            catch (ArgumentException ex)
+
+            // If n is provided: parse as BigInteger and compute max = n - 1 with no size limit
+            if (!BigInteger.TryParse(n, out var N))
+                return BadRequest(new { ok = false, message = "n must be an integer." });
+            if (N < 2)
+                return BadRequest(new { ok = false, message = "n must be ≥ 2." });
+            if (!N.IsEven)
+                return BadRequest(new { ok = false, message = "n must be even." });
+
+            var maxBig = N - 1;
+            return Ok(new
             {
-                return BadRequest(new {ok = false, message = ex.Message});
-            }
+                ok = true,
+                n = N.ToString(),
+                max = maxBig.ToString()
+            });
         }
 
         /// <summary>
