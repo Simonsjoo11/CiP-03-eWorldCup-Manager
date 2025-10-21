@@ -20,6 +20,7 @@ builder.Services.AddCors(o =>
 
 // Register repositories
 builder.Services.AddSingleton<IParticipantRepository, InMemoryParticipantRepository>();
+builder.Services.AddSingleton<IRoundRepository, InMemoryRoundRepository>();
 
 var app = builder.Build();
 
