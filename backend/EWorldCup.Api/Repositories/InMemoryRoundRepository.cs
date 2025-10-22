@@ -5,49 +5,33 @@ namespace EWorldCup.Api.Repositories
 {
     public class InMemoryRoundRepository : IRoundRepository
     {
-        private readonly List<Participant> _participants;
+        private readonly IParticipantRepository _participantsRepo;
 
-        public InMemoryRoundRepository()
+        public InMemoryRoundRepository(IParticipantRepository participantsRepo)
         {
-            _participants = LoadParticipants();
-        }
-
-        private static List<Participant> LoadParticipants()
-        {
-            var filePath = Path.Combine("Data", "participants.json");
-            if (!File.Exists(filePath))
-                return new List<Participant>();
-            
-            var json = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<List<Participant>>(
-                json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                ) ?? new List<Participant>();
+            _participantsRepo = participantsRepo;
         }
 
         public int GetMaxRounds(int? n = null)
         {
-            var count = n ?? _participants.Count;
-            if (count < 2)
-                throw new ArgumentException("Number of participants must be at least 2.");
-            if (count % 2 != 0)
-                throw new ArgumentException("Number of participants must be even.");
-            
+            // Pull actual list once (sync-bridged since this interface is sync)
+            var participants = _participantsRepo.GetAllAsync().GetAwaiter().GetResult();
+            var count = n ?? participants.Count;
+
+            ValidateN(count, participants.Count);
             return count - 1;
         }
 
         public List<MatchPair> GetRoundPairs(int round, int? n = null)
         {
-            var count = n ?? _participants.Count;
+            var participants = _participantsRepo.GetAllAsync().GetAwaiter().GetResult();
+            var actualCount = participants.Count;
+            var count = n ?? actualCount;
 
-            if (count < 2)
-                throw new ArgumentException("Number of participants must be at least 2.");
-            if (count % 2 != 0)
-                throw new ArgumentException("Number of participants must be even.");
-            if (round < 1 || round > count - 1)
-                throw new ArgumentException($"Round must be between 1 and {count - 1}.");
+            ValidateN(count, actualCount);
+            ValidateRound(round, count);
 
-            // Circle method with one fixed player
+            // Circle method with one fixed player (index 0 fixed, 1..n-1 rotate)
             var players = Enumerable.Range(0, count).ToList();
             var fixedPlayer = players[0];
             var rotating = players.Skip(1).ToList();
@@ -56,28 +40,51 @@ namespace EWorldCup.Api.Repositories
             var shift = (round - 1) % rotating.Count;
             var rotated = rotating.Skip(shift).Concat(rotating.Take(shift)).ToList();
 
-            var pairs = new List<MatchPair>();
+            var pairs = new List<MatchPair>(count / 2);
 
             // First pair: Fixed vs last of rotated
             var firstAway = rotated[^1];
             pairs.Add(new MatchPair(
-                _participants.ElementAtOrDefault(fixedPlayer)?.Name ?? $"Player {fixedPlayer + 1}",
-                _participants.ElementAtOrDefault(firstAway)?.Name ?? $"Player {firstAway + 1}"
+                NameOrDefault(participants, fixedPlayer),
+                NameOrDefault(participants, firstAway)
             ));
 
-            // Remaining pairs: mirrored from the ends inward (expluding last, already used)
+            // Remaining pairs: mirrored from the ends inward (excluding last, already used)
             var halfMinusOne = (count / 2) - 1;
             for (int i = 0; i < halfMinusOne; i++)
             {
                 var home = rotated[i];
                 var away = rotated[rotated.Count - 2 - i];
 
-                var homeName = _participants.ElementAtOrDefault(home)?.Name ?? $"Player {home + 1}";
-                var awayName = _participants.ElementAtOrDefault(away)?.Name ?? $"Player {away + 1}";
-                pairs.Add(new MatchPair(homeName, awayName));
+                pairs.Add(new MatchPair(
+                    NameOrDefault(participants, home),
+                    NameOrDefault(participants, away)
+                ));
             }
 
             return pairs;
+        }
+
+        private static void ValidateN(int requestedN, int available)
+        {
+            if (requestedN < 2) throw new ArgumentException("Number of participants must be at least 2.");
+            if ((requestedN & 1) == 1) throw new ArgumentException("Number of participants must be even.");
+
+            // If someone passes n > available participants, we can't map names for those indices.
+            if (requestedN > available)
+                throw new ArgumentException($"Requested n ({requestedN}) exceeds available participants ({available}).");
+        }
+
+        private static void ValidateRound(int round, int n)
+        {
+            if (round < 1 || round > n - 1)
+                throw new ArgumentException($"Round must be between 1 and {n - 1}.");
+        }
+
+        private static string NameOrDefault(IReadOnlyList<Participant> list, int index)
+        {
+            // list is based on actual participants; index is guaranteed < n <= list.Count by ValidateN
+            return list[index].Name ?? $"Player {index + 1}";
         }
     }
 }

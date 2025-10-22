@@ -1,99 +1,69 @@
 ﻿using EWorldCup.Api.DTO.Responses;
 using EWorldCup.Api.Repositories;
+using EWorldCup.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Numerics;
 
 namespace EWorldCup.Api.Controllers
 {
-    /// <summary>
-    /// Hanterar rund-relaterade API-anrop för turneringsschemat.
-    /// </summary>
-    [Route("api/[controller]")]
+    /// <summary>Hanterar rund-relaterade API-anrop för turneringsschemat.</summary>
+    [Route("rounds")]
+    [Produces("application/json")]
     [ApiController]
     public class RoundsController : ControllerBase
     {
-        private readonly IRoundRepository _roundRepository;
+        private readonly ITournamentService _service;
 
-        /// <summary>
-        /// Skapar en ny instans av <see cref="RoundsController"/>
-        /// </summary>
-        public RoundsController(IRoundRepository roundRepository)
+        public RoundsController(ITournamentService service)
         {
-            _roundRepository = roundRepository;
+            _service = service;
         }
 
-        /// <summary>
-        /// Returnerar det maximala antalet rundor för angivet antal deltagare.
-        /// </summary>
+        /// <summary>Returnerar det maximala antalet rundor för angivet antal deltagare.</summary>
         /// <param name="n">Antalet deltagare (valfritt). Om inte angivet används listans längd.</param>
-        /// <returns>Objekt med { ok, n, max } där max = n - 1.</returns>
-        /// <response code="200">Beräkning lyckades.</response>
-        /// <response code="400">Felaktig indata (t.ex. udda eller för litet n).</response>
+        /// <returns>{ ok, max } eller { ok, n, max } om du skickar in BigInteger-sträng.</returns>
         [HttpGet("max")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
         public IActionResult GetMaxRounds([FromQuery] string? n)
         {
-            if (string.IsNullOrWhiteSpace(n))
+            if (!string.IsNullOrWhiteSpace(n))
             {
-                try
-                {
-                    var maxInt = _roundRepository.GetMaxRounds(null); // validates even & ≥ 2
-                    var nInt = maxInt + 1;
+                if (!BigInteger.TryParse(n, out var N))
+                    return BadRequest(new { ok = false, message = "n must be an integer." });
+                if (N < 2) return BadRequest(new { ok = false, message = "n must be ≥ 2." });
+                if (!N.IsEven) return BadRequest(new { ok = false, message = "n must be even." });
 
-                    return Ok(new
-                    {
-                        ok = true,
-                        n = nInt.ToString(),
-                        max = maxInt.ToString()
-                    });
-                }
-                catch (ArgumentException ex)
-                {
-                    return BadRequest(new { ok = false, message = ex.Message });
-                }
+                var maxBig = N - 1;
+                return Ok(new { ok = true, n = N.ToString(), max = maxBig.ToString() });
             }
 
-            // If n is provided: parse as BigInteger and compute max = n - 1 with no size limit
-            if (!BigInteger.TryParse(n, out var N))
-                return BadRequest(new { ok = false, message = "n must be an integer." });
-            if (N < 2)
-                return BadRequest(new { ok = false, message = "n must be ≥ 2." });
-            if (!N.IsEven)
-                return BadRequest(new { ok = false, message = "n must be even." });
-
-            var maxBig = N - 1;
-            return Ok(new
+            try
             {
-                ok = true,
-                n = N.ToString(),
-                max = maxBig.ToString()
-            });
+                var max = _service.GetMaxRounds(null);
+                return Ok(new { ok = true, max });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { ok = false, message = ex.Message });
+            }
         }
 
-        /// <summary>
-        /// Returnerar alla matcher för en specifik runda i turneringen.
-        /// </summary>
-        /// <param name="round">Rundnummer (1 ≤ d ≤ n−1).</param>
-        /// <param name="n">Antalet deltagare (valfritt). Om inte angivet används listans längd.</param>
-        /// <returns>En lista med par (home, away) för angiven runda.</returns>
-        /// <response code="200">Rundan genererades korrekt.</response>
-        /// <response code="400">Felaktig runda eller deltagarantal.</response>
+        /// <summary>Returnerar alla matcher för en specifik runda.</summary>
+        /// <param name="round">Runda (1..n−1)</param>
         [HttpGet("{round:int}")]
-        public IActionResult GetRound(int round, [FromQuery] int? n)
+        [ProducesResponseType(typeof(RoundResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetRound(int round, CancellationToken ct)
         {
             try
             {
-                var pairs = _roundRepository.GetRoundPairs(round, n);
-                var response = new RoundResponse
-                {
-                    Round = round,
-                    Pairs = pairs
-                };
-
+                var response = await _service.GetRoundAsync(round, ct);
                 return Ok(response);
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new {ok = false, message = ex.Message});
+                return BadRequest(new { ok = false, message = ex.Message });
             }
         }
     }

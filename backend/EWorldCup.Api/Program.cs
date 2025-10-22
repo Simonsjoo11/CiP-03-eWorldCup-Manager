@@ -1,4 +1,5 @@
 using EWorldCup.Api.Repositories;
+using EWorldCup.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.AddCors(o =>
 // Register repositories
 builder.Services.AddSingleton<IParticipantRepository, InMemoryParticipantRepository>();
 builder.Services.AddSingleton<IRoundRepository, InMemoryRoundRepository>();
+
+// Register app service
+builder.Services.AddScoped<ITournamentService, TournamentService>();
 
 var app = builder.Build();
 
