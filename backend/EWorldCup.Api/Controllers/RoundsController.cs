@@ -1,5 +1,4 @@
 ﻿using EWorldCup.Api.DTO.Responses;
-using EWorldCup.Api.Repositories;
 using EWorldCup.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Numerics;
@@ -19,17 +18,18 @@ namespace EWorldCup.Api.Controllers
             _service = service;
         }
 
-        /// <summary>Returnerar det maximala antalet rundor för angivet antal deltagare.</summary>
-        /// <param name="n">Antalet deltagare (valfritt). Om inte angivet används listans längd.</param>
+        /// <summary>Returnerar max antal rundor för n deltagare (n−1).</summary>
+        /// <param name="participantCount">Antalet deltagare (valfritt). Om inte angivet används listans längd.</param>
         /// <returns>{ ok, max } eller { ok, n, max } om du skickar in BigInteger-sträng.</returns>
+        // GET /rounds/max?n=
         [HttpGet("max")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-        public IActionResult GetMaxRounds([FromQuery] string? n)
+        public IActionResult GetMaxRounds([FromQuery(Name = "n")] string? participantCount)
         {
-            if (!string.IsNullOrWhiteSpace(n))
+            if (!string.IsNullOrWhiteSpace(participantCount))
             {
-                if (!BigInteger.TryParse(n, out var N))
+                if (!BigInteger.TryParse(participantCount, out var N))
                     return BadRequest(new { ok = false, message = "n must be an integer." });
                 if (N < 2) return BadRequest(new { ok = false, message = "n must be ≥ 2." });
                 if (!N.IsEven) return BadRequest(new { ok = false, message = "n must be even." });
@@ -49,21 +49,22 @@ namespace EWorldCup.Api.Controllers
             }
         }
 
-        /// <summary>Returnerar alla matcher för en specifik runda.</summary>
-        /// <param name="round">Runda (1..n−1)</param>
-        [HttpGet("{round:int}")]
+        /// <summary>Returnerar alla matcher i runda d (1 ≤ d ≤ n−1).</summary>
+        /// <param name="roundNumber">Runda (1..n−1)</param>
+        // GET /rounds/:d
+        [HttpGet("{roundNumber:int}")]
         [ProducesResponseType(typeof(RoundResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetRound(int round, CancellationToken ct)
+        public async Task<IActionResult> GetRound([FromRoute] int roundNumber, CancellationToken ct)
         {
             try
             {
-                var response = await _service.GetRoundAsync(round, ct);
+                var response = await _service.GetRoundAsync(roundNumber, ct);
                 return Ok(response);
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { ok = false, message = ex.Message });
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

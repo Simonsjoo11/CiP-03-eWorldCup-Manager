@@ -2,8 +2,7 @@
 {
     public sealed class RemainingPairsResponse
     {
-        public bool Ok { get; init; } = true;
-        public int N { get; init; }
+        public int ParticipantCount { get; init; }
         public int RoundsPlayed { get; init; }
         public int Remaining { get; init; }
         public int TotalPairs { get; init; }

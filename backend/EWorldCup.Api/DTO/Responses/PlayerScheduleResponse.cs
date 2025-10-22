@@ -9,7 +9,6 @@
 
     public sealed class PlayerScheduleResponse
     {
-        public bool Ok { get; init; } = true;
         public int N { get; init; }
         public int PlayerIndex { get; init; }
         public string Player { get; init; } = string.Empty;

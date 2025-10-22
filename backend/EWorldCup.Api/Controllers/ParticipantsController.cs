@@ -24,6 +24,9 @@ namespace EWorldCup.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(ParticipantsResponse), StatusCodes.Status200OK)]
         public async Task<ActionResult<ParticipantsResponse>> GetAll(CancellationToken ct)
-            => Ok(await _service.GetParticipantsAsync(ct));
+        {
+            var res = await _service.GetParticipantsAsync(ct);
+            return Ok(res);
+        }
     }
 }

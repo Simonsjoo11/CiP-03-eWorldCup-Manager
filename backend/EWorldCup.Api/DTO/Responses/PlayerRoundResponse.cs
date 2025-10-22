@@ -2,7 +2,6 @@
 {
     public sealed class PlayerRoundResponse
     {
-        public bool Ok { get; init; } = true;
         public int Round { get; init; }
         public int PlayerIndex { get; init; }
         public string Player { get; init; } = string.Empty;

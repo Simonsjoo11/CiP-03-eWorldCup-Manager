@@ -1,7 +1,6 @@
 ﻿using EWorldCup.Api.DTO.Responses;
 using EWorldCup.Api.Repositories;
 using EWorldCup.Api.Validators;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EWorldCup.Api.Services
 {
@@ -17,9 +16,18 @@ namespace EWorldCup.Api.Services
         }
         public async Task<ParticipantsResponse> GetParticipantsAsync(CancellationToken ct)
         {
-            var list = await _participants.GetAllAsync();
-            var dtos = list.Select(p => new ParticipantDto(p.Id, p.Name)).ToList();
-            return new ParticipantsResponse(dtos);
+            var list = await _participants.GetAllAsync(ct);
+
+            var dtos = list.Select(p => new ParticipantDto
+            {
+                Id = p.Id,
+                Name = p.Name ?? string.Empty
+            }).ToList();
+
+            return new ParticipantsResponse
+            {
+                Participants = dtos
+            };
         }
 
         public int GetMaxRounds(int? n)
@@ -98,28 +106,28 @@ namespace EWorldCup.Api.Services
             };
         }
 
-
-        public async Task<RemainingPairsResponse> GetRemainingPairsAsync(int? n, int? D, CancellationToken ct)
+        public async Task<RemainingPairsResponse> GetRemainingPairsAsync(int? participantCount, int? roundsPlayed, CancellationToken ct)
         {
-            var count = n ?? await _participants.CountAsync(ct);
+            var count = participantCount ?? await _participants.CountAsync(ct);
             Guard.NEvenAndMin2(count);
 
             var maxRounds = _rounds.GetMaxRounds(count);
-            var d = D ?? 0;
-            if (d < 0 || d > maxRounds) throw new ArgumentException($"D must be 0..{maxRounds}");
+
+            var playedRounds = roundsPlayed ?? 0;
+            if (playedRounds < 0 || playedRounds > maxRounds)
+                throw new ArgumentException($"Played rounds must be between 0 and {maxRounds}");
 
             var totalPairs = count * (count - 1) / 2;
-            var played = d * (count / 2);
-            var remaining = Math.Max(0, totalPairs - played);
+            var playedPairs = playedRounds * (count / 2);
+            var remaining = Math.Max(0, totalPairs - playedPairs);
 
             return new RemainingPairsResponse
             {
-                N = count,
-                RoundsPlayed = d,
+                ParticipantCount = count,
+                RoundsPlayed = playedRounds,
                 Remaining = remaining,
                 TotalPairs = totalPairs
             };
         }
-
     }
 }

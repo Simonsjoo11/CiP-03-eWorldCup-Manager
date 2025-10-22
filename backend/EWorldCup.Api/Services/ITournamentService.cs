@@ -14,7 +14,7 @@ namespace EWorldCup.Api.Services
         Task<PlayerScheduleResponse> GetPlayerScheduleAsync(int i, CancellationToken ct);
         Task<PlayerRoundResponse> GetPlayerInRoundAsync(int i, int d,CancellationToken ct);
 
-        // Matches meta
-        Task<RemainingPairsResponse> GetRemainingPairsAsync(int? n, int? D, CancellationToken ct);
+        // Match
+        Task<RemainingPairsResponse> GetRemainingPairsAsync(int? participantCount, int? roundsPlayed, CancellationToken ct);
     }
 }
