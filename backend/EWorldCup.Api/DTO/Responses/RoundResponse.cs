@@ -4,7 +4,6 @@ namespace EWorldCup.Api.DTO.Responses
 {
     public sealed class RoundResponse
     {
-        public bool Ok { get; init; } = true;
         public int Round {  get; init; }
         public List<MatchPair> Pairs { get; init; } = new();
     }

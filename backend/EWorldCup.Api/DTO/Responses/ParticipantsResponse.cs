@@ -1,5 +1,15 @@
-﻿namespace EWorldCup.Api.DTO.Responses
-{   
-    public record ParticipantDto(int Id, string Name);
-    public record ParticipantsResponse(IReadOnlyList<ParticipantDto> Participants);
+﻿
+namespace EWorldCup.Api.DTO.Responses
+{
+    public sealed class ParticipantDto
+    {
+        public int Id { get; init; }
+
+        public string Name { get; init; } = string.Empty;
+    }
+
+    public sealed class ParticipantsResponse
+    {
+        public IReadOnlyList<ParticipantDto> Participants { get; init; } = Array.Empty<ParticipantDto>();
+    }
 }

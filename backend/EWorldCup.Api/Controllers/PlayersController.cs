@@ -18,9 +18,10 @@ namespace EWorldCup.Api.Controllers
         }
 
         /// <summary>
-        /// Returnerar hela schemat för en spelare
+        /// Returnerar hela schemat för spelare i över rundor 1..n−1.
         /// </summary>
         /// <param name="playerIndex">Spelarindex</param>
+        // GET /player/:i/schedule
         [HttpGet("{playerIndex:int}/schedule")]
         [ProducesResponseType(typeof(PlayerScheduleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
@@ -28,7 +29,8 @@ namespace EWorldCup.Api.Controllers
         {
             try 
             {
-                return Ok(await _service.GetPlayerScheduleAsync(playerIndex, ct));
+                var res = await _service.GetPlayerScheduleAsync(playerIndex, ct);
+                return Ok(res);
             }
             catch (ArgumentException ex)
             {
@@ -37,26 +39,27 @@ namespace EWorldCup.Api.Controllers
         }
 
         /// <summary>
-        /// Returnerar vem spelaren möter i en viss runda.
+        /// Alias till “direktfråga” för spelare i i runda d, men med namn/objekt.
         /// </summary>
         /// <param name="playerIndex">Spelar index</param>
         /// <param name="round">Rund numemr</param>
-        [HttpGet("{playerIndex:int}/round/{round:int}")]
+        [HttpGet("{playerIndex:int}/{round:int}")]
         [ProducesResponseType(typeof(PlayerRoundResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetPlayerInRound([FromRoute] int playerIndex, [FromRoute] int round, CancellationToken ct)
         {
             try
             {
-                return Ok(await _service.GetPlayerInRoundAsync(playerIndex, round, ct));
+                var res = await _service.GetPlayerInRoundAsync(playerIndex, round, ct);
+                return Ok(res);
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { ok = false, message = ex.Message });
+                return BadRequest(new { message = ex.Message });
             }
             catch (InvalidOperationException ex)
             {
-                return StatusCode(500, new { ok = false, message = ex.Message });
+                return StatusCode(500, new { message = ex.Message });
             }
         }
     }
