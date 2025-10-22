@@ -51,15 +51,14 @@ namespace EWorldCup.Api.Controllers
 
         /// <summary>Returnerar alla matcher för en specifik runda.</summary>
         /// <param name="round">Runda (1..n−1)</param>
-        /// <param name="n">Antal deltagare (valfritt). Om inte angivet används listans längd.</param>
         [HttpGet("{round:int}")]
         [ProducesResponseType(typeof(RoundResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetRound(int round, [FromQuery] int? n, CancellationToken ct)
+        public async Task<IActionResult> GetRound(int round, CancellationToken ct)
         {
             try
             {
-                var response = await _service.GetRoundAsync(round, n, ct);
+                var response = await _service.GetRoundAsync(round, ct);
                 return Ok(response);
             }
             catch (ArgumentException ex)

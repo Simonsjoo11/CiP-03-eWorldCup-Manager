@@ -18,19 +18,17 @@ namespace EWorldCup.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Returnerar hela schemat för en spelare
         /// </summary>
-        /// <param name="i"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [HttpGet("{i:int}/schedule")]
+        /// <param name="playerIndex">Spelarindex</param>
+        [HttpGet("{playerIndex:int}/schedule")]
         [ProducesResponseType(typeof(PlayerScheduleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetSchedule([FromRoute] int i, CancellationToken ct)
+        public async Task<IActionResult> GetSchedule([FromRoute] int playerIndex, CancellationToken ct)
         {
             try 
             {
-                return Ok(await _service.GetPlayerScheduleAsync(i, ct));
+                return Ok(await _service.GetPlayerScheduleAsync(playerIndex, ct));
             }
             catch (ArgumentException ex)
             {
@@ -39,20 +37,18 @@ namespace EWorldCup.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Returnerar vem spelaren möter i en viss runda.
         /// </summary>
-        /// <param name="i"></param>
-        /// <param name="d"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [HttpGet("{i:int}/round/{d:int}")]
+        /// <param name="playerIndex">Spelar index</param>
+        /// <param name="round">Rund numemr</param>
+        [HttpGet("{playerIndex:int}/round/{round:int}")]
         [ProducesResponseType(typeof(PlayerRoundResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetPlayerInRound([FromRoute] int i, [FromRoute] int d, CancellationToken ct)
+        public async Task<IActionResult> GetPlayerInRound([FromRoute] int playerIndex, [FromRoute] int round, CancellationToken ct)
         {
             try
             {
-                return Ok(await _service.GetPlayerInRoundAsync(i, d, ct));
+                return Ok(await _service.GetPlayerInRoundAsync(playerIndex, round, ct));
             }
             catch (ArgumentException ex)
             {

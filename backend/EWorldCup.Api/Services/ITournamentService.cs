@@ -8,7 +8,7 @@ namespace EWorldCup.Api.Services
 
         // Rounds
         int GetMaxRounds(int? n);
-        Task<RoundResponse> GetRoundAsync(int round, int? n, CancellationToken ct);
+        Task<RoundResponse> GetRoundAsync(int round, CancellationToken ct);
 
         // Player
         Task<PlayerScheduleResponse> GetPlayerScheduleAsync(int i, CancellationToken ct);

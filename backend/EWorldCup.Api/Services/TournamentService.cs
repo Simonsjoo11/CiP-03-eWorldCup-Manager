@@ -26,9 +26,9 @@ namespace EWorldCup.Api.Services
         {
             return _rounds.GetMaxRounds(n);
         }
-        public Task<RoundResponse> GetRoundAsync(int round, int? n, CancellationToken ct)
+        public Task<RoundResponse> GetRoundAsync(int round, CancellationToken ct)
         {
-            var pairs = _rounds.GetRoundPairs(round, n);
+            var pairs = _rounds.GetRoundPairs(round);
             var resp = new RoundResponse { Round = round, Pairs = pairs };
             return Task.FromResult(resp);
         }
