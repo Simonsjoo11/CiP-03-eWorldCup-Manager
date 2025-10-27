@@ -1,13 +1,5 @@
 import Link from 'next/link';
-import {
-  AppBar,
-  Toolbar,
-  Container,
-  Typography,
-  Stack,
-  Button,
-  Box,
-} from '@mui/material';
+import { AppBar, Toolbar, Container, Typography, Stack, Button, Box } from '@mui/material';
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   return (
@@ -24,9 +16,15 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
           </Typography>
 
           <Stack direction="row" spacing={1}>
-            <Button LinkComponent={Link} href="/rounds/1">Rundor</Button>
-            <Button LinkComponent={Link} href="/players" variant="outlined">Spelarschema</Button>
-            <Button LinkComponent={Link} href="/participants" variant="text">Deltagare</Button>
+            <Button LinkComponent={Link} href="/rounds/1">
+              Rundor
+            </Button>
+            <Button LinkComponent={Link} href="/players" variant="outlined">
+              Spelarschema
+            </Button>
+            <Button LinkComponent={Link} href="/participants" variant="text">
+              Deltagare
+            </Button>
           </Stack>
         </Toolbar>
       </AppBar>
