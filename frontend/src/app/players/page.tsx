@@ -1,5 +1,6 @@
 import { useGetParticipants, useGetPlayerPlayerIndexSchedule } from "@/lib/api/generated/eWorldCupApi";
-import { Alert, Autocomplete, Card, CardContent, CircularProgress, Container, TextField, Typography } from "@mui/material";
+import { Alert, Autocomplete, Card, CardContent, CircularProgress, Container, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography, Link as MuiLink } from "@mui/material";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function PlayersPage() {
@@ -49,6 +50,30 @@ export default function PlayersPage() {
                 <Card>
                     <CardContent>
                         <Typography variant='h6' component='h2' gutterBottom>Schema för {playerName}</Typography>
+                        {schedule.length ? (
+                            <Table aria-label={`Schema för ${playerName}`}>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell scope="col">Runda</TableCell>
+                                        <TableCell scope="col">Motståndare</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {schedule.map((s, i) => (
+                                        <TableRow key={i}>
+                                            <TableCell>
+                                                <MuiLink component={Link} href={`/rounds/${s.round}`} underline="always">
+                                                    {s.round}
+                                                </MuiLink>
+                                            </TableCell>
+                                            <TableCell>{s.opponent ?? `#${s.opponentIndex}`}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ) : 
+                        <Typography>Inga rader.</Typography>
+                        }
                     </CardContent>
                 </Card>
             )}
