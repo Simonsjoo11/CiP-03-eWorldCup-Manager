@@ -27,22 +27,20 @@ export default function PlayersPage() {
   const { data: partsResp, isLoading: lp, error: ep } = useGetParticipants();
   const participants = partsResp?.data?.participants ?? [];
 
-  const [selected, setSelected] = useState<(typeof participants)[number] | null>(
-    participants[0] ?? null,
-  );
-
+  const [selected, setSelected] = useState<(typeof participants)[number] | null>(null);
   useEffect(() => {
     if (!selected && participants.length) setSelected(participants[0]);
   }, [participants, selected]);
 
-  const idx = selected?.id ?? 0;
+  const selectedIndex = selected ? participants.findIndex((p) => p.id === selected.id) : -1;
+
   const {
     data: schedResp,
     isLoading,
     error,
-  } = useGetPlayerPlayerIndexSchedule(idx, {
+  } = useGetPlayerPlayerIndexSchedule(selectedIndex >= 0 ? selectedIndex : 0, {
     query: {
-      enabled: !!idx,
+      enabled: selectedIndex >= 0,
       staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
     },
@@ -67,12 +65,14 @@ export default function PlayersPage() {
       <Autocomplete
         disablePortal
         options={participants}
-        getOptionLabel={(o) => o.name ?? String(o.id)}
         value={selected}
         onChange={(_, val) => setSelected(val)}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        getOptionLabel={(o) => o?.name ?? String(o?.id ?? '')}
         renderInput={(params) => <TextField {...params} label="Välj spelare" />}
         loading={lp}
         sx={{ maxWidth: 360, my: 2 }}
+        noOptionsText={lp ? 'Laddar…' : 'Inga spelare'}
       />
 
       {isLoading && (
