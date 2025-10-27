@@ -30,9 +30,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <QueryProvider>
-              <SiteChrome>
-                {children}
-              </SiteChrome>
+              <SiteChrome>{children}</SiteChrome>
             </QueryProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
