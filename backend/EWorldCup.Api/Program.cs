@@ -30,8 +30,8 @@ builder.Services.AddCors(o =>
 });
 
 // Register repositories
-builder.Services.AddSingleton<IParticipantRepository, InMemoryParticipantRepository>();
-builder.Services.AddSingleton<IRoundRepository, InMemoryRoundRepository>();
+builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
+builder.Services.AddScoped<IRoundRepository, InMemoryRoundRepository>();
 
 // Register app service
 builder.Services.AddScoped<ITournamentService, TournamentService>();
