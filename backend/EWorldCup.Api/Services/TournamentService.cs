@@ -21,6 +21,7 @@ namespace EWorldCup.Api.Services
             var dtos = list.Select(p => new ParticipantDto
             {
                 Id = p.Id,
+                Uid = p.Uid,
                 Name = p.Name ?? string.Empty
             }).ToList();
 
