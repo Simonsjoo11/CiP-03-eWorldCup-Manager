@@ -19,7 +19,7 @@ dotnet run
 
 ---
 
-### 2) Start the backend (ASP.NET Core)
+### 2) Start the frontend (Next.js)
 
 ```bash
 cd frontend
