@@ -1,8 +1,0 @@
-C:\Users\simon.sjoo\Desktop\tech-evo\CiP-03-eWorldCup-Manager\backend\EWorldCup.Api\obj\Debug\net9.0\EWorldCup.Api.csproj.AssemblyReference.cache
-C:\Users\simon.sjoo\Desktop\tech-evo\CiP-03-eWorldCup-Manager\backend\EWorldCup.Api\obj\Debug\net9.0\rpswa.dswa.cache.json
-C:\Users\simon.sjoo\Desktop\tech-evo\CiP-03-eWorldCup-Manager\backend\EWorldCup.Api\obj\Debug\net9.0\EWorldCup.Api.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\simon.sjoo\Desktop\tech-evo\CiP-03-eWorldCup-Manager\backend\EWorldCup.Api\obj\Debug\net9.0\EWorldCup.Api.AssemblyInfoInputs.cache
-C:\Users\simon.sjoo\Desktop\tech-evo\CiP-03-eWorldCup-Manager\backend\EWorldCup.Api\obj\Debug\net9.0\EWorldCup.Api.AssemblyInfo.cs
-C:\Users\simon.sjoo\Desktop\tech-evo\CiP-03-eWorldCup-Manager\backend\EWorldCup.Api\obj\Debug\net9.0\EWorldCup.Api.csproj.CoreCompileInputs.cache
-C:\Users\simon.sjoo\Desktop\tech-evo\CiP-03-eWorldCup-Manager\backend\EWorldCup.Api\obj\Debug\net9.0\EWorldCup.Api.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\simon.sjoo\Desktop\tech-evo\CiP-03-eWorldCup-Manager\backend\EWorldCup.Api\obj\Debug\net9.0\EWorldCup.Api.sourcelink.json
