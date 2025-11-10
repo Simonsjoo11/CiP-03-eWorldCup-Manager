@@ -29,7 +29,9 @@
         /// <summary>
         /// Deletes a participant from the tournament by their ID
         /// </summary>
+        /// <param name="id">The ID of the participant to delete</param>
+        /// <param name="ct">Cancellation token</param>
         /// <returns>True if participant was deleted, false if not found</returns>
-        Task<bool> DeleteAsync(CancellationToken ct = default);
+        Task<bool> DeleteAsync(int id, CancellationToken ct = default);
     }
 }
