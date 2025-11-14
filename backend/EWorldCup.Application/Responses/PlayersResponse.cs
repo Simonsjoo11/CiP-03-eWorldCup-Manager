@@ -2,12 +2,12 @@
 
 namespace EWorldCup.Application.Responses
 {
-    public record ParticipantsResponse
+    public record PlayersResponse
     {
         /// <summary>
-        /// Total number of participants
+        /// Total number of players
         /// </summary>
-        public required int ParticipantCount { get; init; }
+        public required int PlayerCount { get; init; }
 
         /// <summary>
         /// Maximum numper of rounds
@@ -15,8 +15,8 @@ namespace EWorldCup.Application.Responses
         public required int MaxRounds { get; init; }
 
         /// <summary>
-        /// List of all participants
+        /// List of all players
         /// </summary>
-        public List<ParticipantDto> Participants { get; init; } = [];
+        public List<PlayerDto> Players{ get; init; } = [];
     }
 }

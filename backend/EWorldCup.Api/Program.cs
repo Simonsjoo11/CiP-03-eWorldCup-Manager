@@ -28,15 +28,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         ?? "Data Source=eworldcup.db"));
 
 // Register Repository
-builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 
 // Register Services
-builder.Services.AddScoped<IParticipantService, ParticipantService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IRoundSchedulingService, RoundSchedulingService>();
 builder.Services.AddScoped<ITournamentQueryService, TournamentQueryService>();
 
 // Register Seeder
-builder.Services.AddScoped<ParticipantSeeder>();
+builder.Services.AddScoped<PlayerSeeder>();
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -62,7 +62,7 @@ using (var scope = app.Services.CreateScope())
 
         context.Database.EnsureCreated();
 
-        var seeder = services.GetRequiredService<ParticipantSeeder>();
+        var seeder = services.GetRequiredService<PlayerSeeder>();
         await seeder.SeedAsync();
 
         logger.LogInformation("Database initialized successfully");

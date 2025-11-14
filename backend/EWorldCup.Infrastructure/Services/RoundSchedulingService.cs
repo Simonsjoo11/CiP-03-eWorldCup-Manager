@@ -7,36 +7,36 @@ namespace EWorldCup.Infrastructure.Services
     {
 
         /// <summary>
-        /// Calculates the maximum number of rounds for n participants.
-        /// In round-robin, each participant must play every other participant once.
+        /// Calculates the maximum number of rounds for n players.
+        /// In round-robin, each player must play every other player once.
         /// </summary>
-        public int GetMaxRounds(int participantCount)
+        public int GetMaxRounds(int playerCount)
         {
-            if (participantCount < 2)
+            if (playerCount < 2)
             {
-                throw new ArgumentException("Participant count must be at least 2", nameof(participantCount));
+                throw new ArgumentException("Player count must be at least 2", nameof(playerCount));
             }
 
-            if (participantCount % 2 != 0)
+            if (playerCount % 2 != 0)
             {
-                throw new ArgumentException("Participant count must be even", nameof(participantCount));
+                throw new ArgumentException("Player count must be even", nameof(playerCount));
             }
 
-            return participantCount - 1;
+            return playerCount - 1;
         }
 
         /// <summary>
         /// Generates all match pairings for a specific round using the polygon method.
         /// Position 0 is fixed, other positions rotate clockwise.
         /// </summary>
-        public List<MatchPair> GenerateRoundPairs(int round, IReadOnlyList<string> participantNames)
+        public List<MatchPair> GenerateRoundPairs(int round, IReadOnlyList<string> playerNames)
         {
-            int n = participantNames.Count;
+            int n = playerNames.Count;
 
             // Validate inputs
             if (n < 2 || n % 2 != 0)
             {
-                throw new ArgumentException("Number of participants must be even and at least 2");
+                throw new ArgumentException("Number of players must be even and at least 2");
             }
 
             if (round < 1 || round > n - 1)
@@ -64,8 +64,8 @@ namespace EWorldCup.Infrastructure.Services
 
                 pairs.Add(new MatchPair
                 {
-                    Home = participantNames[homeIndex],
-                    Away = participantNames[awayIndex]
+                    Home = playerNames[homeIndex],
+                    Away = playerNames[awayIndex]
                 });
             }
 
@@ -73,7 +73,7 @@ namespace EWorldCup.Infrastructure.Services
         }
 
         /// <summary>
-        /// Rotates participant indices using the polygon method.
+        /// Rotates player indices using the polygon method.
         /// Position 0 stays fixed, positions 1 to n-1 rotate clockwise.
         /// </summary>
         private void RotateIndices(int[] indices)

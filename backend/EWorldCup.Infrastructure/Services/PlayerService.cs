@@ -5,16 +5,16 @@ using EWorldCup.Domain.Interfaces;
 
 namespace EWorldCup.Infrastructure.Services
 {
-    public class ParticipantService : IParticipantService
+    public class PlayerService : IPlayerService
     {
-        private readonly IParticipantRepository _repository;
+        private readonly IPlayerRepository _repository;
 
-        public ParticipantService(IParticipantRepository repository)
+        public PlayerService(IPlayerRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<IReadOnlyList<Participant>> GetAllAsync(CancellationToken ct)
+        public async Task<IReadOnlyList<Player>> GetAllAsync(CancellationToken ct)
         {
             return await _repository.GetAllAsync(ct);
         }
@@ -24,7 +24,7 @@ namespace EWorldCup.Infrastructure.Services
             return await _repository.GetCountAsync(ct);
         }
 
-        public async Task<Participant?> GetByIndexAsync(int index, CancellationToken ct)
+        public async Task<Player?> GetByIndexAsync(int index, CancellationToken ct)
         {
             if (index < 0)
                 throw new ArgumentException("Index must be non-negative.", nameof(index));

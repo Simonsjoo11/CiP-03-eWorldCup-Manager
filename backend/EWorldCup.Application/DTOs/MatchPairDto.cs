@@ -3,12 +3,12 @@
     public record MatchPairDto
     {
         /// <summary>
-        /// Name of the home participant 
+        /// Name of the home player 
         /// </summary>
         public required string Home { get; init; }
 
         /// <summary>
-        /// Name of the away participant
+        /// Name of the away player
         /// </summary>
         public required string Away { get; init; }
     }

@@ -3,9 +3,9 @@
     public record RemainingPairsResponse
     {
         /// <summary>
-        /// Total number of participants in the tournament
+        /// Total number of player in the tournament
         /// </summary>
-        public required int ParticipantCount { get; init; }
+        public required int PlayerCount { get; init; }
 
         /// <summary>
         /// Number of rounds already played

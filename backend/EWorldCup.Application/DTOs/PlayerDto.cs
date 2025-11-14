@@ -1,14 +1,14 @@
 ﻿namespace EWorldCup.Application.DTOs
 {
-    public record ParticipantDto
+    public record PlayerDto
     {
         /// <summary>
-        /// The ID of the participant
+        /// The ID of the player
         /// </summary>
         public required int Id { get; init; }
 
         /// <summary>
-        /// The name of the participant
+        /// The name of the player
         /// </summary>
         public required string Name { get; init; }
     }

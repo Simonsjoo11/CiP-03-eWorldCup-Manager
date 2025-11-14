@@ -5,73 +5,73 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EWorldCup.Infrastructure.Repositories
 {
-    public class ParticipantRepository : IParticipantRepository
+    public class PlayerRepository : IPlayerRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public ParticipantRepository(ApplicationDbContext context)
+        public PlayerRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
         /// <summary>
-        /// Retrieves all participants in the tournament
+        /// Retrieves all players in the tournament
         /// </summary>
-        public async Task<IReadOnlyList<Participant>> GetAllAsync(CancellationToken ct = default)
+        public async Task<IReadOnlyList<Player>> GetAllAsync(CancellationToken ct = default)
         {
-            return await _context.Participants
+            return await _context.Players
                 .OrderBy(p => p.Id)
                 .ToListAsync(ct);
         }
 
         /// <summary>
-        /// Gets a participant by their 0-based index
+        /// Gets a player by their 0-based index
         /// </summary>
-        public async Task<Participant?> GetByIndexAsync(int index, CancellationToken ct = default)
+        public async Task<Player?> GetByIndexAsync(int index, CancellationToken ct = default)
         {
-            return await _context.Participants
+            return await _context.Players
                 .OrderBy(p => p.Id)
                 .Skip(index)
                 .FirstOrDefaultAsync(ct);
         }
 
         /// <summary>
-        /// Gets the total count of participants
+        /// Gets the total count of players
         /// </summary>
         public async Task<int> GetCountAsync(CancellationToken ct = default)
         {
-            return await _context.Participants.CountAsync(ct);
+            return await _context.Players.CountAsync(ct);
         }
 
         /// <summary>
-        /// Adds a new participant to the database
+        /// Adds a new player to the database
         /// </summary>
-        public async Task<Participant> AddAsync(Participant participant, CancellationToken ct = default)
+        public async Task<Player> AddAsync(Player player, CancellationToken ct = default)
         {
-            if (participant.Uid == Guid.Empty)
+            if (player.Uid == Guid.Empty)
             {
-                participant.Uid = Guid.NewGuid();
+                player.Uid = Guid.NewGuid();
             }
 
-            _context.Participants.Add(participant);
+            _context.Players.Add(player);
             await _context.SaveChangesAsync(ct);
 
-            return participant;
+            return player;
         }
 
         /// <summary>
-        /// Deletes a participant by their ID
+        /// Deletes a player by their ID
         /// </summary>
         public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
         {
-            var participant = await _context.Participants.FindAsync([id], ct);
+            var player = await _context.Players.FindAsync([id], ct);
 
-            if (participant == null)
+            if (player == null)
             {
                 return false;
             }
 
-            _context.Participants.Remove(participant);
+            _context.Players.Remove(player);
             await _context.SaveChangesAsync(ct);
 
             return true;

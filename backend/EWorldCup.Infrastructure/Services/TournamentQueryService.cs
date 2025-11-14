@@ -6,27 +6,27 @@ namespace EWorldCup.Infrastructure.Services
 {
     public class TournamentQueryService : ITournamentQueryService
     {
-        private readonly IParticipantService _participantService;
+        private readonly IPlayerService _playerService;
         private readonly IRoundSchedulingService _roundSchedulingService;
 
         public TournamentQueryService(
-            IParticipantService participantService,
+            IPlayerService playerService,
             IRoundSchedulingService roundSchedulingService)
         {
-            _participantService = participantService;
+            _playerService = playerService;
             _roundSchedulingService = roundSchedulingService;
         }
 
-        public async Task<ParticipantsResponse> GetParticipantAsync(CancellationToken ct = default)
+        public async Task<PlayersResponse> GetPlayerAsync(CancellationToken ct = default)
         {
-            var participants = await _participantService.GetAllAsync(ct);
-            var count = participants.Count;
+            var players = await _playerService.GetAllAsync(ct);
+            var count = players.Count;
 
-            return new ParticipantsResponse
+            return new PlayersResponse
             {
-                ParticipantCount = count,
+                PlayerCount = count,
                 MaxRounds = _roundSchedulingService.GetMaxRounds(count),
-                Participants = participants.Select(p => new ParticipantDto
+                Players = players.Select(p => new PlayerDto
                 {
                     Id = p.Id,
                     Name = p.Name
@@ -36,8 +36,8 @@ namespace EWorldCup.Infrastructure.Services
 
         public async Task<PlayerRoundResponse> GetPlayerInRoundAsync(int playerIndex, int round, CancellationToken ct = default)
         {
-            var participants = await _participantService.GetAllAsync(ct);
-            var count = participants.Count;
+            var players = await _playerService.GetAllAsync(ct);
+            var count = players.Count;
             var maxRounds = _roundSchedulingService.GetMaxRounds(count);
 
             if (playerIndex < 0 || playerIndex >= count)
@@ -50,11 +50,11 @@ namespace EWorldCup.Infrastructure.Services
                 throw new ArgumentException($"Round must be between 1 and {maxRounds}", nameof(round));
             }
 
-            var player = participants[playerIndex];
-            var participantNames = participants.Select(p => p.Name).ToList();
+            var player = players[playerIndex];
+            var playerNames = players.Select(p => p.Name).ToList();
 
             // Generate pairs for this round
-            var pairs = _roundSchedulingService.GenerateRoundPairs(round, participantNames);
+            var pairs = _roundSchedulingService.GenerateRoundPairs(round, playerNames);
 
             // Find this player's match
             var matchPair = pairs.FirstOrDefault(p =>
@@ -66,7 +66,7 @@ namespace EWorldCup.Infrastructure.Services
             }
 
             var opponentName = matchPair.Home == player.Name ? matchPair.Away : matchPair.Home;
-            var opponentIndex = participants.ToList().FindIndex(p => p.Name == opponentName);
+            var opponentIndex = players.ToList().FindIndex(p => p.Name == opponentName);
 
             return new PlayerRoundResponse
             {
@@ -80,16 +80,16 @@ namespace EWorldCup.Infrastructure.Services
 
         public async Task<PlayerScheduleResponse> GetPlayerScheduleAsync(int playerIndex, CancellationToken ct = default)
         {
-            var participants = await _participantService.GetAllAsync(ct);
-            var count = participants.Count;
+            var players = await _playerService.GetAllAsync(ct);
+            var count = players.Count;
 
             if (playerIndex < 0 || playerIndex >= count)
             {
                 throw new ArgumentException($"Player index must be between 0 and {count - 1}", nameof(playerIndex));
             }
 
-            var player = participants[playerIndex];
-            var participantNames = participants.Select(p => p.Name).ToList();
+            var player = players[playerIndex];
+            var playerNames = players.Select(p => p.Name).ToList();
             var maxRounds = _roundSchedulingService.GetMaxRounds(count);
 
             var schedule = new List<PlayerScheduleItemDto>();
@@ -97,7 +97,7 @@ namespace EWorldCup.Infrastructure.Services
             // Generate schedule for each round
             for (int round = 1; round <= maxRounds; round++)
             {
-                var pairs = _roundSchedulingService.GenerateRoundPairs(round, participantNames);
+                var pairs = _roundSchedulingService.GenerateRoundPairs(round, playerNames);
 
                 // Find which match this player is in
                 var matchPair = pairs.FirstOrDefault(p =>
@@ -106,7 +106,7 @@ namespace EWorldCup.Infrastructure.Services
                 if (matchPair != null)
                 {
                     var opponentName = matchPair.Home == player.Name ? matchPair.Away : matchPair.Home;
-                    var opponentIndex = participants.ToList().FindIndex(p => p.Name == opponentName);
+                    var opponentIndex = players.ToList().FindIndex(p => p.Name == opponentName);
 
                     schedule.Add(new PlayerScheduleItemDto
                     {
@@ -126,14 +126,14 @@ namespace EWorldCup.Infrastructure.Services
             };
         }
 
-        public async Task<RemainingPairsResponse> GetRemainingPairsAsync(int? participantcount, int? roundsPlayed, CancellationToken ct = default)
+        public async Task<RemainingPairsResponse> GetRemainingPairsAsync(int? playerCount, int? roundsPlayed, CancellationToken ct = default)
         {
-            int n = participantcount ?? await _participantService.GetCountAsync(ct);
+            int n = playerCount ?? await _playerService.GetCountAsync(ct);
             int d = roundsPlayed ?? 0;
 
             if (n < 2 || n % 2 != 0)
             {
-                throw new ArgumentException("Participant count must be even and at least 2");
+                throw new ArgumentException("Player count must be even and at least 2");
             }
 
             var maxRounds = _roundSchedulingService.GetMaxRounds(n);
@@ -157,7 +157,7 @@ namespace EWorldCup.Infrastructure.Services
 
             return new RemainingPairsResponse
             {
-                ParticipantCount = n,
+                PlayerCount = n,
                 RoundsPlayed = d,
                 TotalPairs = totalPairs,
                 Remaining = remaining
@@ -166,8 +166,8 @@ namespace EWorldCup.Infrastructure.Services
 
         public async Task<RoundResponse> GetRoundAsync(int round, CancellationToken ct = default)
         {
-            var participants = await _participantService.GetAllAsync(ct);
-            var count = participants.Count;
+            var players = await _playerService.GetAllAsync(ct);
+            var count = players.Count;
             var maxRounds = _roundSchedulingService.GetMaxRounds(count);
 
             if (round < 1 || round > maxRounds)
@@ -175,11 +175,11 @@ namespace EWorldCup.Infrastructure.Services
                 throw new ArgumentException($"Round must be between 1 and {maxRounds}", nameof(round));
             }
 
-            // Get participant names in order
-            var participantNames = participants.Select(p => p.Name).ToList();
+            // Get player names in order
+            var playerNames = players.Select(p => p.Name).ToList();
 
             // Generate pairs for this round
-            var pairs = _roundSchedulingService.GenerateRoundPairs(round, participantNames);
+            var pairs = _roundSchedulingService.GenerateRoundPairs(round, playerNames);
 
             return new RoundResponse
             {

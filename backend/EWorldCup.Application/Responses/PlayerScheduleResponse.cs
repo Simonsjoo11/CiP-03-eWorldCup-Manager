@@ -5,7 +5,7 @@ namespace EWorldCup.Application.Responses
     public record PlayerScheduleResponse
     {
         /// <summary>
-        /// Total number of participants in the tournament
+        /// Total number of players in the tournament
         /// </summary>
         public required int N { get; init; }
 

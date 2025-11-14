@@ -21,7 +21,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<None Update="Data\participants.json">
+		<None Update="Data\players.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
