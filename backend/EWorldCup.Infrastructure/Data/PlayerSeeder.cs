@@ -36,7 +36,11 @@ namespace EWorldCup.Infrastructure.Data
             }
 
             var jsonContent = await File.ReadAllTextAsync(jsonPath);
-            var playerData = JsonSerializer.Deserialize<List<PlayerSeedData>>(jsonContent);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var playerData = JsonSerializer.Deserialize<List<PlayerSeedData>>(jsonContent, options);
 
             if (playerData == null || !playerData.Any())
             {
@@ -47,7 +51,6 @@ namespace EWorldCup.Infrastructure.Data
             // Create players with auto-generated Guids
             var players = playerData.Select(p => new Player
             {
-                Id = p.Id,
                 Name = p.Name,
                 Uid = Guid.NewGuid() // Auto-generate Guid for each player
             }).ToList();

@@ -22,10 +22,15 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Configure Database
+// Configure Database - Use SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? "Data Source=eworldcup.db"));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null)
+    ));
 
 // Register Repository
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
@@ -51,7 +56,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Seed the database
+// Apply migrations and seed database
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -60,17 +65,24 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<ApplicationDbContext>();
         var logger = services.GetRequiredService<ILogger<Program>>();
 
-        context.Database.EnsureCreated();
+        logger.LogInformation("Applying database migrations...");
+        
+        // Use Migrate() instead of EnsureCreated() for proper migrations
+        await context.Database.MigrateAsync();
+        
+        logger.LogInformation("Migrations applied successfully");
 
+        // Seed data
         var seeder = services.GetRequiredService<PlayerSeeder>();
         await seeder.SeedAsync();
 
-        logger.LogInformation("Database initialized successfully");
+        logger.LogInformation("Database seeded successfully");
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database");
+        logger.LogError(ex, "An error occurred while initializing the database");
+        throw;
     }
 }
 
