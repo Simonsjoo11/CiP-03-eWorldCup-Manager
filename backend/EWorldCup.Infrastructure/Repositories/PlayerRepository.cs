@@ -2,6 +2,7 @@
 using EWorldCup.Domain.Interfaces;
 using EWorldCup.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 
 namespace EWorldCup.Infrastructure.Repositories
 {
@@ -35,6 +36,11 @@ namespace EWorldCup.Infrastructure.Repositories
                 .FirstOrDefaultAsync(ct);
         }
 
+        public async Task<Player?> GetByUidAsync(Guid uid, CancellationToken ct = default)
+        {
+            return await _context.Players.FirstOrDefaultAsync(p => p.Uid == uid, ct);
+        }
+
         /// <summary>
         /// Gets the total count of players
         /// </summary>
@@ -48,33 +54,19 @@ namespace EWorldCup.Infrastructure.Repositories
         /// </summary>
         public async Task<Player> AddAsync(Player player, CancellationToken ct = default)
         {
-            if (player.Uid == Guid.Empty)
-            {
-                player.Uid = Guid.NewGuid();
-            }
-
-            _context.Players.Add(player);
+            await _context.Players.AddAsync(player, ct);
             await _context.SaveChangesAsync(ct);
-
             return player;
         }
 
         /// <summary>
-        /// Deletes a player by their ID
+        /// Deletes a player
         /// </summary>
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public async Task<bool> DeleteAsync(Player player, CancellationToken ct = default)
         {
-            var player = await _context.Players.FindAsync([id], ct);
-
-            if (player == null)
-            {
-                return false;
-            }
-
             _context.Players.Remove(player);
-            await _context.SaveChangesAsync(ct);
-
-            return true;
+            var result = await _context.SaveChangesAsync(ct);
+            return result > 0;
         }
     }
 }

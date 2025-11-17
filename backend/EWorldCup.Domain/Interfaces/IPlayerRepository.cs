@@ -1,4 +1,6 @@
-﻿namespace EWorldCup.Domain.Interfaces
+﻿using EWorldCup.Domain.Entities;
+
+namespace EWorldCup.Domain.Interfaces
 {
     public interface IPlayerRepository
     {
@@ -13,6 +15,12 @@
         /// </summary>
         /// <returns>The player if found, null otherwise</returns>
         Task<Entities.Player?> GetByIndexAsync(int index, CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets a player by their Uid
+        /// </summary>
+        /// <returns>The player if found, null otherwise</returns>
+        Task<Entities.Player?> GetByUidAsync(Guid uid, CancellationToken ct = default);
 
         /// <summary>
         /// Gets the total count of players in the tournament
@@ -32,6 +40,6 @@
         /// <param name="id">The ID of the player to delete</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>True if player was deleted, false if not found</returns>
-        Task<bool> DeleteAsync(int id, CancellationToken ct = default);
+        Task<bool> DeleteAsync(Player player, CancellationToken ct = default);
     }
 }

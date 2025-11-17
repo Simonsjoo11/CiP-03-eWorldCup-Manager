@@ -18,5 +18,8 @@ namespace EWorldCup.Application.Interfaces
         /// Gets a player by their index
         /// </summary>
         Task<Player?> GetByIndexAsync(int index, CancellationToken ct = default);
+
+        Task<Player> AddPlayerAsync(string name, CancellationToken ct = default);
+        Task<bool> RemovePlayerByUidAsync(Guid uid, CancellationToken ct = default);
     }
 }
