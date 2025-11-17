@@ -22,13 +22,17 @@ namespace EWorldCup.Infrastructure.Services
             var players = await _playerService.GetAllAsync(ct);
             var count = players.Count;
 
+            // Only calculate max rounds if player count is even
+            int? maxRounds = count % 2 == 0 ? _roundSchedulingService.GetMaxRounds(count) : null;
+
             return new PlayersResponse
             {
                 PlayerCount = count,
-                MaxRounds = _roundSchedulingService.GetMaxRounds(count),
+                MaxRounds = maxRounds,
                 Players = players.Select(p => new PlayerDto
                 {
                     Id = p.Id,
+                    Uid = p.Uid,
                     Name = p.Name
                 }).ToList()
             };

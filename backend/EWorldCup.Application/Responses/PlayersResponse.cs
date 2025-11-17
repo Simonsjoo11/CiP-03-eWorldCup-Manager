@@ -10,9 +10,9 @@ namespace EWorldCup.Application.Responses
         public required int PlayerCount { get; init; }
 
         /// <summary>
-        /// Maximum numper of rounds
+        /// Maximum number of rounds (-1 if player count is odd)
         /// </summary>
-        public required int MaxRounds { get; init; }
+        public int? MaxRounds { get; init; }
 
         /// <summary>
         /// List of all players
