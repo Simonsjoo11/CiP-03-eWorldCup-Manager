@@ -39,6 +39,7 @@ builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IRoundSchedulingService, RoundSchedulingService>();
 builder.Services.AddScoped<ITournamentQueryService, TournamentQueryService>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<IRpsGameService, RpsGameService>();
 
 // Register Seeder
