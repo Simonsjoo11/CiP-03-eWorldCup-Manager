@@ -5,10 +5,10 @@
  * API for managing round-robin tournament schedules
  * OpenAPI spec version: v1
  */
-import type { MatchPairDto } from './matchPairDto';
 
-export interface RoundResponse {
-  round: number;
+export interface PlayerDto {
+  id: number;
+  uid: string;
   /** @nullable */
-  pairs?: MatchPairDto[] | null;
+  name: string | null;
 }

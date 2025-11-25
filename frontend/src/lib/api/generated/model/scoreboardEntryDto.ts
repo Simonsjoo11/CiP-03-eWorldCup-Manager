@@ -5,13 +5,13 @@
  * API for managing round-robin tournament schedules
  * OpenAPI spec version: v1
  */
-import type { PlayerScheduleItemDto } from './playerScheduleItemDto';
 
-export interface PlayerScheduleResponse {
-  n: number;
+export interface ScoreboardEntryDto {
   playerIndex: number;
   /** @nullable */
-  player: string | null;
-  /** @nullable */
-  schedule?: PlayerScheduleItemDto[] | null;
+  playerName: string | null;
+  wins: number;
+  losses: number;
+  points: number;
+  rank?: number;
 }

@@ -13,7 +13,7 @@ export default defineConfig({
       mode: 'split',
       schemas: './src/lib/api/generated/model',
       clean: true,
-      baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:63069',
+      baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:63070',
     },
     hooks: {
       afterAllFilesWrite: ['prettier --write'],

@@ -6,9 +6,13 @@
  * OpenAPI spec version: v1
  */
 
-export interface PlayerScheduleItemDto {
-  round: number;
-  opponentIndex: number;
+export interface MatchStatusDto {
   /** @nullable */
-  opponent: string | null;
+  opponentName: string | null;
+  opponentIndex: number;
+  gameRoundNumber: number;
+  playerWins: number;
+  opponentWins: number;
+  /** @nullable */
+  matchStatus: string | null;
 }

@@ -10,7 +10,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "jest",
-    "fetch:openapi": "curl http://localhost:63069/swagger/v1/swagger.json -o openapi.json",
+    "fetch:openapi": "curl http://localhost:63070/swagger/v1/swagger.json -o openapi.json",
     "generate:api": "orval",
     "update:api": "npm run fetch:openapi && npm run generate:api"
   },

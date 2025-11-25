@@ -5,10 +5,8 @@
  * API for managing round-robin tournament schedules
  * OpenAPI spec version: v1
  */
-import type { MatchPairDto } from './matchPairDto';
+import type { RpsChoice } from './rpsChoice';
 
-export interface RoundResponse {
-  round: number;
-  /** @nullable */
-  pairs?: MatchPairDto[] | null;
+export interface PlayRoundRequest {
+  choice: RpsChoice;
 }
