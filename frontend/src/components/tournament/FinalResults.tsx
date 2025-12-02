@@ -9,7 +9,7 @@ interface FinalResultsProps {
 }
 
 export default function FinalResults({ results, playerName, onNewTournament }: FinalResultsProps) {
-  const isWinner = results.winner === playerName;
+  const isWinner = results.playerWon;
 
   return (
     <Box>
@@ -20,7 +20,7 @@ export default function FinalResults({ results, playerName, onNewTournament }: F
 
         <Box my={4}>
           <Typography variant="h4" color="primary" gutterBottom>
-            {results.winner}
+            {results.winner || 'Unknown'}
           </Typography>
           <Typography variant="h6" color="text.secondary">
             is the champion!
@@ -33,14 +33,20 @@ export default function FinalResults({ results, playerName, onNewTournament }: F
           </Typography>
         ) : (
           <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-            You finished {formatOrdinal(results.playerRank || 0)}. Better luck next time!
+            You finished {formatOrdinal(results.playerRank)}. Better luck next time!
           </Typography>
         )}
+
+        <Typography variant="body2" color="text.secondary">
+          Total Rounds: {results.totalRounds}
+        </Typography>
       </Paper>
 
-      <Box mb={4}>
-        <Scoreboard entries={results.finalScoreboard || []} highlightPlayerName={playerName} />
-      </Box>
+      {results.finalScoreboard && results.finalScoreboard.length > 0 && (
+        <Box mb={4}>
+          <Scoreboard entries={results.finalScoreboard} highlightPlayerName={playerName} />
+        </Box>
+      )}
 
       <Box display="flex" justifyContent="center">
         <Button variant="contained" size="large" onClick={onNewTournament}>
