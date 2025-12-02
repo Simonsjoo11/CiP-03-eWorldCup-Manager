@@ -16,6 +16,9 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
           </Typography>
 
           <Stack direction="row" spacing={1}>
+            <Button LinkComponent={Link} href="/tournament" variant="contained" color="primary">
+              Tournament
+            </Button>
             <Button LinkComponent={Link} href="/rounds/1">
               Rundor
             </Button>
