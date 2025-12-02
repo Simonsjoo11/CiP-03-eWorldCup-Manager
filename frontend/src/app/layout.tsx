@@ -4,7 +4,6 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import theme from '@/theme';
 import { ThemeProvider } from '@mui/material/styles';
 import { Roboto } from 'next/font/google';
-import Link from 'next/link';
 import SiteChrome from '@/components/SiteChrome';
 
 const roboto = Roboto({
@@ -16,7 +15,7 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: 'E-WorldCup Manager',
-  description: 'Round view, player schedules and participants',
+  description: 'Round view, player schedules and players',
 };
 
 export default function RootLayout({
