@@ -1,13 +1,16 @@
 {
-  "openapi": "3.0.4",
+  "openapi": "3.0.1",
   "info": {
-    "title": "EWorldCup.Api",
-    "version": "1.0"
+    "title": "eWorldCup Manager API",
+    "description": "API for managing round-robin tournament schedules",
+    "version": "v1"
   },
   "paths": {
-    "/match/{playerIndex}/{roundNumber}": {
+    "/Match/{playerIndex}/{roundNumber}": {
       "get": {
-        "tags": ["Match"],
+        "tags": [
+          "Match"
+        ],
         "parameters": [
           {
             "name": "playerIndex",
@@ -43,19 +46,23 @@
             "description": "Bad Request",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
               }
             }
           }
         }
       }
     },
-    "/match/remaining/{participantCount}/{roundsPlayed}": {
+    "/Match/remaining/{playerCount}/{roundsPlayed}": {
       "get": {
-        "tags": ["Match"],
+        "tags": [
+          "Match"
+        ],
         "parameters": [
           {
-            "name": "participantCount",
+            "name": "playerCount",
             "in": "path",
             "required": true,
             "schema": {
@@ -88,23 +95,8 @@
             "description": "Bad Request",
             "content": {
               "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
-    "/participants": {
-      "get": {
-        "tags": ["Participants"],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ParticipantsResponse"
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -112,9 +104,76 @@
         }
       }
     },
-    "/player/{playerIndex}/schedule": {
+    "/Player": {
       "get": {
-        "tags": ["Players"],
+        "tags": [
+          "Player"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayersResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlayerRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlayerRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlayerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Player/{playerIndex}/schedule": {
+      "get": {
+        "tags": [
+          "Player"
+        ],
         "parameters": [
           {
             "name": "playerIndex",
@@ -141,16 +200,20 @@
             "description": "Bad Request",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
               }
             }
           }
         }
       }
     },
-    "/player/{playerIndex}/{round}": {
+    "/Player/{playerIndex}/{round}": {
       "get": {
-        "tags": ["Players"],
+        "tags": [
+          "Player"
+        ],
         "parameters": [
           {
             "name": "playerIndex",
@@ -186,22 +249,28 @@
             "description": "Bad Request",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
               }
             }
           }
         }
       }
     },
-    "/rounds/max": {
-      "get": {
-        "tags": ["Rounds"],
+    "/Player/{uid}": {
+      "delete": {
+        "tags": [
+          "Player"
+        ],
         "parameters": [
           {
-            "name": "n",
-            "in": "query",
+            "name": "uid",
+            "in": "path",
+            "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -210,24 +279,28 @@
             "description": "OK",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": { }
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
               }
             }
           }
         }
       }
     },
-    "/rounds/{roundNumber}": {
+    "/Rounds/{roundNumber}": {
       "get": {
-        "tags": ["Rounds"],
+        "tags": [
+          "Rounds"
+        ],
         "parameters": [
           {
             "name": "roundNumber",
@@ -254,7 +327,309 @@
             "description": "Bad Request",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Rounds/max": {
+      "get": {
+        "tags": [
+          "Rounds"
+        ],
+        "parameters": [
+          {
+            "name": "n",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Tournament/start": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentStartRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentStartRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentStartRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TournamentStartResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/Tournament/{tournamentId}/status": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TournamentStatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Tournament/{tournamentId}/play": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayRoundRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayRoundRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayRoundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayRoundResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Tournament/{tournamentId}/advance": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdvanceRoundResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Tournament/{tournamentId}/final": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinalResultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
               }
             }
           }
@@ -264,7 +639,126 @@
   },
   "components": {
     "schemas": {
-      "MatchPair": {
+      "AdvanceRoundResponse": {
+        "required": [
+          "completedRound",
+          "matchesSimulated",
+          "message",
+          "tournamentComplete",
+          "tournamentId"
+        ],
+        "type": "object",
+        "properties": {
+          "tournamentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedRound": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "matchesSimulated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tournamentComplete": {
+            "type": "boolean"
+          },
+          "nextRound": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "nextOpponent": {
+            "type": "string",
+            "nullable": true
+          },
+          "scoreboard": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScoreboardEntryDto"
+            },
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreatePlayerRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FinalResultResponse": {
+        "required": [
+          "playerName",
+          "playerRank",
+          "playerWon",
+          "totalRounds",
+          "tournamentId",
+          "winner",
+          "winnerIndex",
+          "winnerPoints"
+        ],
+        "type": "object",
+        "properties": {
+          "tournamentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalRounds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "winner": {
+            "type": "string",
+            "nullable": true
+          },
+          "winnerIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "winnerPoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerWon": {
+            "type": "boolean"
+          },
+          "playerRank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "finalScoreboard": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScoreboardEntryDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MatchPairDto": {
+        "required": [
+          "away",
+          "home"
+        ],
         "type": "object",
         "properties": {
           "home": {
@@ -278,12 +772,120 @@
         },
         "additionalProperties": false
       },
-      "ParticipantDto": {
+      "MatchStatusDto": {
+        "required": [
+          "gameRoundNumber",
+          "matchStatus",
+          "opponentIndex",
+          "opponentName",
+          "opponentWins",
+          "playerWins"
+        ],
+        "type": "object",
+        "properties": {
+          "opponentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "opponentIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gameRoundNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerWins": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "opponentWins": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "matchStatus": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlayRoundRequest": {
+        "required": [
+          "choice"
+        ],
+        "type": "object",
+        "properties": {
+          "choice": {
+            "$ref": "#/components/schemas/RpsChoice"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlayRoundResponse": {
+        "required": [
+          "gameRoundNumber",
+          "matchComplete",
+          "message",
+          "opponentChoice",
+          "opponentWins",
+          "playerChoice",
+          "playerWins",
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "gameRoundNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerChoice": {
+            "$ref": "#/components/schemas/RpsChoice"
+          },
+          "opponentChoice": {
+            "$ref": "#/components/schemas/RpsChoice"
+          },
+          "result": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerWins": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "opponentWins": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "matchComplete": {
+            "type": "boolean"
+          },
+          "matchWinner": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlayerDto": {
+        "required": [
+          "id",
+          "name",
+          "uid"
+        ],
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": "string",
@@ -292,20 +894,14 @@
         },
         "additionalProperties": false
       },
-      "ParticipantsResponse": {
-        "type": "object",
-        "properties": {
-          "participants": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ParticipantDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "PlayerRoundResponse": {
+        "required": [
+          "opponent",
+          "opponentIndex",
+          "player",
+          "playerIndex",
+          "round"
+        ],
         "type": "object",
         "properties": {
           "round": {
@@ -332,6 +928,11 @@
         "additionalProperties": false
       },
       "PlayerScheduleItemDto": {
+        "required": [
+          "opponent",
+          "opponentIndex",
+          "round"
+        ],
         "type": "object",
         "properties": {
           "round": {
@@ -350,6 +951,11 @@
         "additionalProperties": false
       },
       "PlayerScheduleResponse": {
+        "required": [
+          "n",
+          "player",
+          "playerIndex"
+        ],
         "type": "object",
         "properties": {
           "n": {
@@ -374,10 +980,68 @@
         },
         "additionalProperties": false
       },
-      "RemainingPairsResponse": {
+      "PlayersResponse": {
+        "required": [
+          "playerCount"
+        ],
         "type": "object",
         "properties": {
-          "participantCount": {
+          "playerCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxRounds": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "players": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlayerDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "RemainingPairsResponse": {
+        "required": [
+          "playerCount",
+          "remaining",
+          "roundsPlayed",
+          "totalPairs"
+        ],
+        "type": "object",
+        "properties": {
+          "playerCount": {
             "type": "integer",
             "format": "int32"
           },
@@ -397,6 +1061,9 @@
         "additionalProperties": false
       },
       "RoundResponse": {
+        "required": [
+          "round"
+        ],
         "type": "object",
         "properties": {
           "round": {
@@ -406,7 +1073,146 @@
           "pairs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/MatchPair"
+              "$ref": "#/components/schemas/MatchPairDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RpsChoice": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "ScoreboardEntryDto": {
+        "required": [
+          "losses",
+          "playerIndex",
+          "playerName",
+          "points",
+          "wins"
+        ],
+        "type": "object",
+        "properties": {
+          "playerIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "wins": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "losses": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rank": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TournamentStartRequest": {
+        "required": [
+          "playerName",
+          "totalPlayers"
+        ],
+        "type": "object",
+        "properties": {
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalPlayers": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TournamentStartResponse": {
+        "required": [
+          "firstOpponent",
+          "firstOpponentIndex",
+          "maxRounds",
+          "playerName",
+          "tournamentId"
+        ],
+        "type": "object",
+        "properties": {
+          "tournamentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalPlayers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxRounds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstOpponent": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstOpponentIndex": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TournamentStatusResponse": {
+        "required": [
+          "currentRound",
+          "maxRounds",
+          "status",
+          "tournamentId"
+        ],
+        "type": "object",
+        "properties": {
+          "tournamentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentRound": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxRounds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "currentMatch": {
+            "$ref": "#/components/schemas/MatchStatusDto"
+          },
+          "scoreboard": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScoreboardEntryDto"
             },
             "nullable": true
           }

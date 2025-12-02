@@ -1,70 +1,117 @@
-﻿using EWorldCup.Api.DTO.Responses;
-using EWorldCup.Api.Services;
+﻿using EWorldCup.Application.Interfaces;
+using EWorldCup.Application.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Numerics;
 
 namespace EWorldCup.Api.Controllers
 {
-    /// <summary>Hanterar rund-relaterade API-anrop för turneringsschemat.</summary>
-    [Route("rounds")]
-    [Produces("application/json")]
+    /// <summary>
+    /// Manages tournament rounds and matches
+    /// </summary>
+    [Route("[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class RoundsController : ControllerBase
     {
-        private readonly ITournamentService _service;
+        private readonly ITournamentQueryService _tournamentService;
+        private readonly IPlayerService _playerService;
+        private readonly IRoundSchedulingService _roundSchedulingService;
+        private readonly ILogger<RoundsController> _logger;
 
-        public RoundsController(ITournamentService service)
+        public RoundsController(
+            ITournamentQueryService tournamentService,
+            IPlayerService playerService,
+            IRoundSchedulingService roundSchedulingService,
+            ILogger<RoundsController> logger)
         {
-            _service = service;
+            _tournamentService = tournamentService;
+            _playerService = playerService;
+            _roundSchedulingService = roundSchedulingService;
+            _logger = logger;
         }
 
-        /// <summary>Returnerar max antal rundor för n deltagare (n−1).</summary>
-        /// <param name="participantCount">Antalet deltagare (valfritt). Om inte angivet används listans längd.</param>
-        /// <returns>{ ok, max } eller { ok, n, max } om du skickar in BigInteger-sträng.</returns>
-        // GET /rounds/max?n=
-        [HttpGet("max")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-        public IActionResult GetMaxRounds([FromQuery(Name = "n")] string? participantCount)
-        {
-            if (!string.IsNullOrWhiteSpace(participantCount))
-            {
-                if (!BigInteger.TryParse(participantCount, out var N))
-                    return BadRequest(new { ok = false, message = "n must be an integer." });
-                if (N < 2) return BadRequest(new { ok = false, message = "n must be ≥ 2." });
-                if (!N.IsEven) return BadRequest(new { ok = false, message = "n must be even." });
-
-                var maxBig = N - 1;
-                return Ok(new { ok = true, n = N.ToString(), max = maxBig.ToString() });
-            }
-
-            try
-            {
-                var max = _service.GetMaxRounds(null);
-                return Ok(new { ok = true, max });
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { ok = false, message = ex.Message });
-            }
-        }
-
-        /// <summary>Returnerar alla matcher i runda d (1 ≤ d ≤ n−1).</summary>
-        /// <param name="roundNumber">Runda (1..n−1)</param>
-        // GET /rounds/:d
+        /// <summary>
+        /// Get all matches in a specific round
+        /// </summary>
+        /// <param name="roundNumber">Round number (1 to n-1</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>All matches for the specified round</returns>
+        /// <response code="200">Returns the matches for the round</response>
+        /// <response code="400">If round number is invalid</response>
         [HttpGet("{roundNumber:int}")]
         [ProducesResponseType(typeof(RoundResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetRound([FromRoute] int roundNumber, CancellationToken ct)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<RoundResponse>> GetRound(int roundNumber, CancellationToken ct = default)
         {
+            _logger.LogInformation("Fetching round {RoundNumber}", roundNumber);
+
             try
             {
-                var response = await _service.GetRoundAsync(roundNumber, ct);
+                var response = await _tournamentService.GetRoundAsync(roundNumber, ct);
                 return Ok(response);
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                _logger.LogWarning(ex, "Invalid round number: {RoundNumber}", roundNumber);
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get maximum number of rounds for the tournament
+        /// </summary>
+        /// <param name="n">Optional: Number of players (if not provided, uses current count)</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>Maximum number of rounds</returns>
+        /// <response code="200">Returns the maximum rounds</response>
+        /// <response code="400">If player count is invalid</response>
+        [HttpGet("max")]
+        [ProducesResponseType(typeof(long), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<long>> GetMaxRounds([FromQuery] long? n = null, CancellationToken ct = default)
+        {
+            _logger.LogInformation("Fetching max rounds for n={N}", n);
+
+            try
+            {
+                // Validate range for long
+                if (n.HasValue && (n.Value < 0 || n.Value > long.MaxValue - 1))
+                {
+                    return BadRequest(new { error = "Player count is out of valid range" });
+                }
+
+                long playerCount = n ?? await _playerService.GetCountAsync(ct);
+
+                // Validate player count
+                if (playerCount < 2)
+                {
+                    return BadRequest(new { error = "Player count must be at least 2" });
+                }
+
+                if (playerCount % 2 != 0)
+                {
+                    return BadRequest(new { error = "Player count must be even" });
+                }
+
+                // Check for potential overflow when calculating max rounds
+                if (playerCount == long.MaxValue)
+                {
+                    return BadRequest(new { error = "Player count is too large to calculate max rounds" });
+                }
+
+                // Calculate max rounds (n - 1)
+                var maxRounds = playerCount - 1;
+                return Ok(maxRounds);
+            }
+            catch (OverflowException ex)
+            {
+                _logger.LogError(ex, "Overflow calculating max rounds for n={N}", n);
+                return BadRequest(new { error = "Player count is too large for calculation" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error calculating max rounds");
+                return BadRequest(new { error = ex.Message });
             }
         }
     }

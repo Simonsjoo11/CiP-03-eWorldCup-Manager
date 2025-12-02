@@ -1,63 +1,101 @@
-﻿using EWorldCup.Api.DTO.Responses;
-using EWorldCup.Api.Services;
+﻿using EWorldCup.Application.Interfaces;
+using EWorldCup.Application.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EWorldCup.Api.Controllers
 {
-    [Route("match")]
-    [Produces("application/json")]
+    /// <summary>
+    /// Handles match-related queries
+    /// </summary>
     [ApiController]
+    [Route("[controller]")]
+    [Produces("application/json")]
     public class MatchController : ControllerBase
     {
-        private readonly ITournamentService _service;
+        private readonly ITournamentQueryService _tournamentService;
+        private readonly ILogger<MatchController> _logger;
 
-        public MatchController(ITournamentService service)
+        public MatchController(
+            ITournamentQueryService tournamentService,
+            ILogger<MatchController> logger)
         {
-            _service = service;
+            _tournamentService = tournamentService;
+            _logger = logger;
         }
 
         /// <summary>
-        /// GET /match?playerIndex=&roundNumber=
-        /// Returnerar direkt vem spelare i möter i runda d (0-baserat index).
+        /// Get opponent for a specific player in a specific round
         /// </summary>
+        /// <param name="playerIndex">Player index (0-based)</param>
+        /// <param name="roundNumber">Round number (1 to n-1)</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>Match information for the player in the round</returns>
+        /// <response code="200">Returns the match information</response>
+        /// <response code="400">If parameters are invalid</response>
         [HttpGet("{playerIndex:int}/{roundNumber:int}")]
         [ProducesResponseType(typeof(PlayerRoundResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetDirectMatch([FromRoute] int playerIndex, [FromRoute] int roundNumber, CancellationToken ct = default)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<PlayerRoundResponse>> GetMatch(
+            int playerIndex,
+            int roundNumber,
+            CancellationToken ct = default)
         {
+            _logger.LogInformation(
+                "Fetching match for player {PlayerIndex} in round {RoundNumber}",
+                playerIndex,
+                roundNumber);
+
             try
             {
-                var dto = await _service.GetPlayerInRoundAsync(playerIndex, roundNumber, ct);
-                return Ok(dto);
+                var response = await _tournamentService.GetPlayerInRoundAsync(playerIndex, roundNumber, ct);
+                return Ok(response);
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                _logger.LogWarning(ex, "Invalid parameters: playerIndex={PlayerIndex}, round={Round}",
+                    playerIndex, roundNumber);
+                return BadRequest(new { error = ex.Message });
             }
             catch (InvalidOperationException ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                _logger.LogError(ex, "Error getting match for player {PlayerIndex} in round {Round}",
+                    playerIndex, roundNumber);
+                return BadRequest(new { error = ex.Message });
             }
         }
 
         /// <summary>
-        /// GET /match/remaining?participantCount=&roundsPlayed=
-        /// Returnerar antal återstående unika par efter att D rundor har spelats.
+        /// Calculate remaining unique pairs after D rounds have been played
         /// </summary>
-        [HttpGet("remaining/{participantCount:int}/{roundsPlayed:int}")]
+        /// <param name="playerCount">Number of players (must be even)</param>
+        /// <param name="roundsPlayed">Number of rounds already played</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>Number of remaining unique pairs</returns>
+        /// <response code="200">Returns remaining pairs count</response>
+        /// <response code="400">If parameters are invalid</response>
+        [HttpGet("remaining/{playerCount:int}/{roundsPlayed:int}")]
         [ProducesResponseType(typeof(RemainingPairsResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetRemainingPairs([FromRoute] int? participantCount, [FromRoute] int? roundsPlayed, CancellationToken ct = default)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<RemainingPairsResponse>> GetRemainingPairs(
+            int playerCount,
+            int roundsPlayed,
+            CancellationToken ct = default)
         {
+            _logger.LogInformation(
+                "Calculating remaining pairs for n={N}, D={D}",
+                playerCount,
+                roundsPlayed);
+
             try
             {
-                var dto = await _service.GetRemainingPairsAsync(participantCount, roundsPlayed, ct);
-                return Ok(dto);
+                var response = await _tournamentService.GetRemainingPairsAsync(playerCount, roundsPlayed, ct);
+                return Ok(response);
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                _logger.LogWarning(ex, "Invalid parameters: n={N}, D={D}", playerCount, roundsPlayed);
+                return BadRequest(new { error = ex.Message });
             }
         }
     }

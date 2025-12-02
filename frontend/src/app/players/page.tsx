@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  useGetParticipants,
-  useGetPlayerPlayerIndexSchedule,
-} from '@/lib/api/generated/eWorldCupApi';
+import { useGetPlayer, useGetPlayerPlayerIndexSchedule } from '@/lib/api/generated/eWorldCupApi';
 import {
   Alert,
   Autocomplete,
@@ -24,15 +21,15 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function PlayersPage() {
-  const { data: partsResp, isLoading: lp, error: ep } = useGetParticipants();
-  const participants = partsResp?.data?.participants ?? [];
+  const { data: partsResp, isLoading: lp, error: ep } = useGetPlayer();
+  const players = partsResp?.data?.players ?? [];
 
-  const [selected, setSelected] = useState<(typeof participants)[number] | null>(null);
+  const [selected, setSelected] = useState<(typeof players)[number] | null>(null);
   useEffect(() => {
-    if (!selected && participants.length) setSelected(participants[0]);
-  }, [participants, selected]);
+    if (!selected && players.length) setSelected(players[0]);
+  }, [players, selected]);
 
-  const selectedIndex = selected ? participants.findIndex((p) => p.id === selected.id) : -1;
+  const selectedIndex = selected ? players.findIndex((p) => p.id === selected.id) : -1;
 
   const {
     data: schedResp,
@@ -64,7 +61,7 @@ export default function PlayersPage() {
 
       <Autocomplete
         disablePortal
-        options={participants}
+        options={players}
         value={selected}
         onChange={(_, val) => setSelected(val)}
         isOptionEqualToValue={(option, value) => option.id === value.id}
