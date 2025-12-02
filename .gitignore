@@ -2,3 +2,5 @@ backend/.vs
 backend/EWorldCup.Api/bin
 backend/EWorldCup.Api/obj
 backend/EWorldCup.Api/obj
+.claude
+.vscode
