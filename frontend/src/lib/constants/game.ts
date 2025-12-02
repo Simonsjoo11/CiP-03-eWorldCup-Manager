@@ -27,3 +27,17 @@ export const MOVE_LABELS: Record<GameMove, string> = {
   paper: 'Paper',
   scissors: 'Scissors',
 };
+
+export const stringToRpsChoice = (move: GameMove): number => {
+  const mapping = {
+    [GAME_MOVES.ROCK]: 0,
+    [GAME_MOVES.PAPER]: 1,
+    [GAME_MOVES.SCISSORS]: 2,
+  };
+  return mapping[move];
+};
+
+export const rpsChoiceToString = (choice: number): GameMove => {
+  const moves = [GAME_MOVES.ROCK, GAME_MOVES.PAPER, GAME_MOVES.SCISSORS];
+  return moves[choice];
+};
