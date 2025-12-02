@@ -48,14 +48,14 @@ export const getMatchPlayerIndexRoundNumber = (
   roundNumber: number,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<PlayerRoundResponse>> => {
-  return axios.get(`https://localhost:63070/Match/${playerIndex}/${roundNumber}`, options);
+  return axios.get(`http://localhost:63070/Match/${playerIndex}/${roundNumber}`, options);
 };
 
 export const getGetMatchPlayerIndexRoundNumberQueryKey = (
   playerIndex?: number,
   roundNumber?: number,
 ) => {
-  return [`https://localhost:63070/Match/${playerIndex}/${roundNumber}`] as const;
+  return [`http://localhost:63070/Match/${playerIndex}/${roundNumber}`] as const;
 };
 
 export const getGetMatchPlayerIndexRoundNumberQueryOptions = <
@@ -191,7 +191,7 @@ export const getMatchRemainingPlayerCountRoundsPlayed = (
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<RemainingPairsResponse>> => {
   return axios.get(
-    `https://localhost:63070/Match/remaining/${playerCount}/${roundsPlayed}`,
+    `http://localhost:63070/Match/remaining/${playerCount}/${roundsPlayed}`,
     options,
   );
 };
@@ -200,7 +200,7 @@ export const getGetMatchRemainingPlayerCountRoundsPlayedQueryKey = (
   playerCount?: number,
   roundsPlayed?: number,
 ) => {
-  return [`https://localhost:63070/Match/remaining/${playerCount}/${roundsPlayed}`] as const;
+  return [`http://localhost:63070/Match/remaining/${playerCount}/${roundsPlayed}`] as const;
 };
 
 export const getGetMatchRemainingPlayerCountRoundsPlayedQueryOptions = <
@@ -358,11 +358,11 @@ export function useGetMatchRemainingPlayerCountRoundsPlayed<
 export const getPlayer = (
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<PlayersResponse>> => {
-  return axios.get(`https://localhost:63070/Player`, options);
+  return axios.get(`http://localhost:63070/Player`, options);
 };
 
 export const getGetPlayerQueryKey = () => {
-  return [`https://localhost:63070/Player`] as const;
+  return [`http://localhost:63070/Player`] as const;
 };
 
 export const getGetPlayerQueryOptions = <
@@ -461,7 +461,7 @@ export const postPlayer = (
   createPlayerRequest: CreatePlayerRequest,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<PlayerDto>> => {
-  return axios.post(`https://localhost:63070/Player`, createPlayerRequest, options);
+  return axios.post(`http://localhost:63070/Player`, createPlayerRequest, options);
 };
 
 export const getPostPlayerMutationOptions = <
@@ -530,11 +530,11 @@ export const getPlayerPlayerIndexSchedule = (
   playerIndex: number,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<PlayerScheduleResponse>> => {
-  return axios.get(`https://localhost:63070/Player/${playerIndex}/schedule`, options);
+  return axios.get(`http://localhost:63070/Player/${playerIndex}/schedule`, options);
 };
 
 export const getGetPlayerPlayerIndexScheduleQueryKey = (playerIndex?: number) => {
-  return [`https://localhost:63070/Player/${playerIndex}/schedule`] as const;
+  return [`http://localhost:63070/Player/${playerIndex}/schedule`] as const;
 };
 
 export const getGetPlayerPlayerIndexScheduleQueryOptions = <
@@ -654,11 +654,11 @@ export const getPlayerPlayerIndexRound = (
   round: number,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<PlayerRoundResponse>> => {
-  return axios.get(`https://localhost:63070/Player/${playerIndex}/${round}`, options);
+  return axios.get(`http://localhost:63070/Player/${playerIndex}/${round}`, options);
 };
 
 export const getGetPlayerPlayerIndexRoundQueryKey = (playerIndex?: number, round?: number) => {
-  return [`https://localhost:63070/Player/${playerIndex}/${round}`] as const;
+  return [`http://localhost:63070/Player/${playerIndex}/${round}`] as const;
 };
 
 export const getGetPlayerPlayerIndexRoundQueryOptions = <
@@ -786,7 +786,7 @@ export const deletePlayerUid = (
   uid: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<unknown>> => {
-  return axios.delete(`https://localhost:63070/Player/${uid}`, options);
+  return axios.delete(`http://localhost:63070/Player/${uid}`, options);
 };
 
 export const getDeletePlayerUidMutationOptions = <
@@ -857,11 +857,11 @@ export const getRoundsRoundNumber = (
   roundNumber: number,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<RoundResponse>> => {
-  return axios.get(`https://localhost:63070/Rounds/${roundNumber}`, options);
+  return axios.get(`http://localhost:63070/Rounds/${roundNumber}`, options);
 };
 
 export const getGetRoundsRoundNumberQueryKey = (roundNumber?: number) => {
-  return [`https://localhost:63070/Rounds/${roundNumber}`] as const;
+  return [`http://localhost:63070/Rounds/${roundNumber}`] as const;
 };
 
 export const getGetRoundsRoundNumberQueryOptions = <
@@ -979,14 +979,14 @@ export const getRoundsMax = (
   params?: GetRoundsMaxParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<number>> => {
-  return axios.get(`https://localhost:63070/Rounds/max`, {
+  return axios.get(`http://localhost:63070/Rounds/max`, {
     ...options,
     params: { ...params, ...options?.params },
   });
 };
 
 export const getGetRoundsMaxQueryKey = (params?: GetRoundsMaxParams) => {
-  return [`https://localhost:63070/Rounds/max`, ...(params ? [params] : [])] as const;
+  return [`http://localhost:63070/Rounds/max`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetRoundsMaxQueryOptions = <
@@ -1092,7 +1092,7 @@ export const postTournamentStart = (
   tournamentStartRequest: TournamentStartRequest,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<TournamentStartResponse>> => {
-  return axios.post(`https://localhost:63070/Tournament/start`, tournamentStartRequest, options);
+  return axios.post(`http://localhost:63070/Tournament/start`, tournamentStartRequest, options);
 };
 
 export const getPostTournamentStartMutationOptions = <
@@ -1166,11 +1166,11 @@ export const getTournamentTournamentIdStatus = (
   tournamentId: number,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<TournamentStatusResponse>> => {
-  return axios.get(`https://localhost:63070/Tournament/${tournamentId}/status`, options);
+  return axios.get(`http://localhost:63070/Tournament/${tournamentId}/status`, options);
 };
 
 export const getGetTournamentTournamentIdStatusQueryKey = (tournamentId?: number) => {
-  return [`https://localhost:63070/Tournament/${tournamentId}/status`] as const;
+  return [`http://localhost:63070/Tournament/${tournamentId}/status`] as const;
 };
 
 export const getGetTournamentTournamentIdStatusQueryOptions = <
@@ -1292,7 +1292,7 @@ export const postTournamentTournamentIdPlay = (
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<PlayRoundResponse>> => {
   return axios.post(
-    `https://localhost:63070/Tournament/${tournamentId}/play`,
+    `http://localhost:63070/Tournament/${tournamentId}/play`,
     playRoundRequest,
     options,
   );
@@ -1372,7 +1372,7 @@ export const postTournamentTournamentIdAdvance = (
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<AdvanceRoundResponse>> => {
   return axios.post(
-    `https://localhost:63070/Tournament/${tournamentId}/advance`,
+    `http://localhost:63070/Tournament/${tournamentId}/advance`,
     undefined,
     options,
   );
@@ -1451,11 +1451,11 @@ export const getTournamentTournamentIdFinal = (
   tournamentId: number,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<FinalResultResponse>> => {
-  return axios.get(`https://localhost:63070/Tournament/${tournamentId}/final`, options);
+  return axios.get(`http://localhost:63070/Tournament/${tournamentId}/final`, options);
 };
 
 export const getGetTournamentTournamentIdFinalQueryKey = (tournamentId?: number) => {
-  return [`https://localhost:63070/Tournament/${tournamentId}/final`] as const;
+  return [`http://localhost:63070/Tournament/${tournamentId}/final`] as const;
 };
 
 export const getGetTournamentTournamentIdFinalQueryOptions = <
