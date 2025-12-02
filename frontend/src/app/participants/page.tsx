@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetParticipants } from '@/lib/api/generated/eWorldCupApi';
+import { useGetPlayer } from '@/lib/api/generated/eWorldCupApi';
 import {
   Alert,
   CircularProgress,
@@ -12,11 +12,11 @@ import {
   Typography,
 } from '@mui/material';
 
-export default function ParticipantsPage() {
-  const { data, isLoading, error } = useGetParticipants({
+export default function PlayersPage() {
+  const { data, isLoading, error } = useGetPlayer({
     query: { staleTime: 30 * 60 * 1000, refetchOnWindowFocus: false },
   });
-  const participants = data?.data?.participants ?? [];
+  const players = data?.data?.players ?? [];
 
   return (
     <Container maxWidth="sm" sx={{ py: 4 }}>
@@ -33,9 +33,9 @@ export default function ParticipantsPage() {
 
       {!isLoading &&
         !error &&
-        (participants.length ? (
+        (players.length ? (
           <List>
-            {participants.map((p) => (
+            {players.map((p) => (
               <ListItem key={p.id} divider>
                 <ListItemText primary={p.name ?? `#${p.id}`} />
               </ListItem>

@@ -39,6 +39,7 @@ builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IRoundSchedulingService, RoundSchedulingService>();
 builder.Services.AddScoped<ITournamentQueryService, TournamentQueryService>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<IRpsGameService, RpsGameService>();
 
 // Register Seeder
@@ -49,7 +50,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -98,7 +99,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 

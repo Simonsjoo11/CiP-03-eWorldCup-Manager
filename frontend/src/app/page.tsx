@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetParticipants, useGetRoundsMax } from '@/lib/api/generated/eWorldCupApi';
+import { useGetPlayer, useGetRoundsMax } from '@/lib/api/generated/eWorldCupApi';
 import {
   Alert,
   Box,
@@ -19,14 +19,14 @@ export default function Home() {
     data: partsResp,
     isLoading: lp,
     error: ep,
-  } = useGetParticipants({ query: { staleTime: 30 * 60 * 1000 } });
+  } = useGetPlayer({ query: { staleTime: 30 * 60 * 1000 } });
   const {
     data: maxResp,
     isLoading: lm,
     error: em,
   } = useGetRoundsMax({}, { query: { staleTime: 30 * 60 * 1000 } });
 
-  const n = partsResp?.data?.participants?.length ?? 0;
+  const n = partsResp?.data?.players?.length ?? 0;
   const rawMax = maxResp?.data;
   const max =
     typeof rawMax === 'number'

@@ -6,12 +6,13 @@
  * OpenAPI spec version: v1
  */
 
-export interface PlayerRoundResponse {
-  round: number;
-  playerIndex: number;
+export interface TournamentStartResponse {
+  tournamentId: number;
   /** @nullable */
-  player: string | null;
-  opponentIndex: number;
+  playerName: string | null;
+  totalPlayers?: number;
+  maxRounds: number;
   /** @nullable */
-  opponent: string | null;
+  firstOpponent: string | null;
+  firstOpponentIndex: number;
 }
