@@ -1,6 +1,7 @@
 'use client';
 
 import { useGetPlayer, useGetRoundsMax } from '@/lib/api/generated/eWorldCupApi';
+import { extractMaxRounds } from '@/lib/utils/api';
 import {
   Alert,
   Box,
@@ -27,13 +28,7 @@ export default function Home() {
   } = useGetRoundsMax({}, { query: { staleTime: 30 * 60 * 1000 } });
 
   const n = partsResp?.data?.players?.length ?? 0;
-  const rawMax = maxResp?.data;
-  const max =
-    typeof rawMax === 'number'
-      ? rawMax
-      : rawMax && typeof rawMax === 'object' && 'max' in (rawMax as any)
-        ? (rawMax as any).max
-        : undefined;
+  const max = extractMaxRounds(maxResp?.data);
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
