@@ -1,6 +1,7 @@
 'use client';
 
 import { useGetRoundsMax, useGetRoundsRoundNumber } from '@/lib/api/generated/eWorldCupApi';
+import { extractMaxRounds } from '@/lib/utils/api';
 import {
   Alert,
   Box,
@@ -33,13 +34,7 @@ export default function RoundPage() {
 
   const { data: maxResp, isLoading: loadingMax, error: errorMax } = useGetRoundsMax();
 
-  const rawMax = maxResp?.data;
-  const max =
-    typeof rawMax === 'number'
-      ? rawMax
-      : rawMax && typeof rawMax === 'object' && 'max' in (rawMax as any)
-        ? (rawMax as any).max
-        : undefined;
+  const max = extractMaxRounds(maxResp?.data);
 
   // Clamp invalid slug once we know max
   useEffect(() => {
@@ -47,7 +42,7 @@ export default function RoundPage() {
       const clamped = Math.min(Math.max(round, 1), max);
       if (clamped !== round) setRound(clamped);
     }
-  }, [max]);
+  }, [max, round]);
 
   // /rounds/{roundNumber} returns AxiosResponse<RoundResponse>
   const {
@@ -66,7 +61,7 @@ export default function RoundPage() {
     if (!Number.isFinite(initial) || initial !== round) {
       router.replace(`/rounds/${round}`);
     }
-  }, [round]);
+  }, [initial, round, router]);
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
