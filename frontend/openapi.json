@@ -8,9 +8,7 @@
   "paths": {
     "/Match/{playerIndex}/{roundNumber}": {
       "get": {
-        "tags": [
-          "Match"
-        ],
+        "tags": ["Match"],
         "parameters": [
           {
             "name": "playerIndex",
@@ -57,9 +55,7 @@
     },
     "/Match/remaining/{playerCount}/{roundsPlayed}": {
       "get": {
-        "tags": [
-          "Match"
-        ],
+        "tags": ["Match"],
         "parameters": [
           {
             "name": "playerCount",
@@ -106,9 +102,7 @@
     },
     "/Player": {
       "get": {
-        "tags": [
-          "Player"
-        ],
+        "tags": ["Player"],
         "responses": {
           "200": {
             "description": "OK",
@@ -123,9 +117,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Player"
-        ],
+        "tags": ["Player"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -171,9 +163,7 @@
     },
     "/Player/{playerIndex}/schedule": {
       "get": {
-        "tags": [
-          "Player"
-        ],
+        "tags": ["Player"],
         "parameters": [
           {
             "name": "playerIndex",
@@ -211,9 +201,7 @@
     },
     "/Player/{playerIndex}/{round}": {
       "get": {
-        "tags": [
-          "Player"
-        ],
+        "tags": ["Player"],
         "parameters": [
           {
             "name": "playerIndex",
@@ -260,9 +248,7 @@
     },
     "/Player/{uid}": {
       "delete": {
-        "tags": [
-          "Player"
-        ],
+        "tags": ["Player"],
         "parameters": [
           {
             "name": "uid",
@@ -279,7 +265,7 @@
             "description": "OK",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {}
               }
             }
           },
@@ -298,9 +284,7 @@
     },
     "/Rounds/{roundNumber}": {
       "get": {
-        "tags": [
-          "Rounds"
-        ],
+        "tags": ["Rounds"],
         "parameters": [
           {
             "name": "roundNumber",
@@ -338,9 +322,7 @@
     },
     "/Rounds/max": {
       "get": {
-        "tags": [
-          "Rounds"
-        ],
+        "tags": ["Rounds"],
         "parameters": [
           {
             "name": "n",
@@ -378,9 +360,7 @@
     },
     "/Tournament/start": {
       "post": {
-        "tags": [
-          "Tournament"
-        ],
+        "tags": ["Tournament"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -429,9 +409,7 @@
     },
     "/Tournament/{tournamentId}/status": {
       "get": {
-        "tags": [
-          "Tournament"
-        ],
+        "tags": ["Tournament"],
         "parameters": [
           {
             "name": "tournamentId",
@@ -469,9 +447,7 @@
     },
     "/Tournament/{tournamentId}/play": {
       "post": {
-        "tags": [
-          "Tournament"
-        ],
+        "tags": ["Tournament"],
         "parameters": [
           {
             "name": "tournamentId",
@@ -538,9 +514,7 @@
     },
     "/Tournament/{tournamentId}/advance": {
       "post": {
-        "tags": [
-          "Tournament"
-        ],
+        "tags": ["Tournament"],
         "parameters": [
           {
             "name": "tournamentId",
@@ -588,9 +562,7 @@
     },
     "/Tournament/{tournamentId}/final": {
       "get": {
-        "tags": [
-          "Tournament"
-        ],
+        "tags": ["Tournament"],
         "parameters": [
           {
             "name": "tournamentId",
@@ -688,9 +660,7 @@
         "additionalProperties": false
       },
       "CreatePlayerRequest": {
-        "required": [
-          "name"
-        ],
+        "required": ["name"],
         "type": "object",
         "properties": {
           "name": {
@@ -755,10 +725,7 @@
         "additionalProperties": false
       },
       "MatchPairDto": {
-        "required": [
-          "away",
-          "home"
-        ],
+        "required": ["away", "home"],
         "type": "object",
         "properties": {
           "home": {
@@ -811,9 +778,7 @@
         "additionalProperties": false
       },
       "PlayRoundRequest": {
-        "required": [
-          "choice"
-        ],
+        "required": ["choice"],
         "type": "object",
         "properties": {
           "choice": {
@@ -872,11 +837,7 @@
         "additionalProperties": false
       },
       "PlayerDto": {
-        "required": [
-          "id",
-          "name",
-          "uid"
-        ],
+        "required": ["id", "name", "uid"],
         "type": "object",
         "properties": {
           "id": {
@@ -895,13 +856,7 @@
         "additionalProperties": false
       },
       "PlayerRoundResponse": {
-        "required": [
-          "opponent",
-          "opponentIndex",
-          "player",
-          "playerIndex",
-          "round"
-        ],
+        "required": ["opponent", "opponentIndex", "player", "playerIndex", "round"],
         "type": "object",
         "properties": {
           "round": {
@@ -928,11 +883,7 @@
         "additionalProperties": false
       },
       "PlayerScheduleItemDto": {
-        "required": [
-          "opponent",
-          "opponentIndex",
-          "round"
-        ],
+        "required": ["opponent", "opponentIndex", "round"],
         "type": "object",
         "properties": {
           "round": {
@@ -951,11 +902,7 @@
         "additionalProperties": false
       },
       "PlayerScheduleResponse": {
-        "required": [
-          "n",
-          "player",
-          "playerIndex"
-        ],
+        "required": ["n", "player", "playerIndex"],
         "type": "object",
         "properties": {
           "n": {
@@ -981,9 +928,7 @@
         "additionalProperties": false
       },
       "PlayersResponse": {
-        "required": [
-          "playerCount"
-        ],
+        "required": ["playerCount"],
         "type": "object",
         "properties": {
           "playerCount": {
@@ -1030,15 +975,10 @@
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": {}
       },
       "RemainingPairsResponse": {
-        "required": [
-          "playerCount",
-          "remaining",
-          "roundsPlayed",
-          "totalPairs"
-        ],
+        "required": ["playerCount", "remaining", "roundsPlayed", "totalPairs"],
         "type": "object",
         "properties": {
           "playerCount": {
@@ -1061,9 +1001,7 @@
         "additionalProperties": false
       },
       "RoundResponse": {
-        "required": [
-          "round"
-        ],
+        "required": ["round"],
         "type": "object",
         "properties": {
           "round": {
@@ -1081,22 +1019,12 @@
         "additionalProperties": false
       },
       "RpsChoice": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
+        "enum": [0, 1, 2],
         "type": "integer",
         "format": "int32"
       },
       "ScoreboardEntryDto": {
-        "required": [
-          "losses",
-          "playerIndex",
-          "playerName",
-          "points",
-          "wins"
-        ],
+        "required": ["losses", "playerIndex", "playerName", "points", "wins"],
         "type": "object",
         "properties": {
           "playerIndex": {
@@ -1127,10 +1055,7 @@
         "additionalProperties": false
       },
       "TournamentStartRequest": {
-        "required": [
-          "playerName",
-          "totalPlayers"
-        ],
+        "required": ["playerName", "totalPlayers"],
         "type": "object",
         "properties": {
           "playerName": {
@@ -1182,12 +1107,7 @@
         "additionalProperties": false
       },
       "TournamentStatusResponse": {
-        "required": [
-          "currentRound",
-          "maxRounds",
-          "status",
-          "tournamentId"
-        ],
+        "required": ["currentRound", "maxRounds", "status", "tournamentId"],
         "type": "object",
         "properties": {
           "tournamentId": {
